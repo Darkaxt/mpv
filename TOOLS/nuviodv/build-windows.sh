@@ -2,6 +2,9 @@
 # Owned Dolby Vision baseline; reuse mpv's full static Windows CI build.
 set -euo pipefail
 : "${FFBUILD_PREFIX:?Use the pinned FFmpeg-Builds container from sources.json}"
+# checkout's Node action and this container shell use different home/config
+# bindings. Trust only this explicitly checked-out source, before version probes.
+git config --global --add safe.directory "$PWD"
 export NUVIODV_SOURCE_LOCK=1 NUVIODV_BUILD_JOBS=2
 export CMAKE_BUILD_PARALLEL_LEVEL=2 CARGO_BUILD_JOBS=2 MAKEFLAGS=-j2
 export CARGO_NET_OFFLINE=false

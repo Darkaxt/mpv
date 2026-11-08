@@ -24,7 +24,8 @@ Android library and NuvioMobileDV integration are now explicitly included.
   library, licenses, exact source/dependency manifest, checksums and build/test
   evidence. Independently retrieve the published package and verify its hash,
   contents and DLL API. Preserve the installed Nuvio runtime's existing pin;
-  this request does not implement the next feature or promote a new app runtime.
+  this request does not implement the next feature or promote a Windows app
+  runtime. Android application delivery follows DV6-DV7 below.
 - DV5: Explain the Windows/Android difference and actual capabilities in README.
   Windows uses FFmpeg/libplacebo; it does not need the Android wrapper or a
   separately linked libdovi. Keep the three-day native maintenance coverage.
@@ -48,8 +49,10 @@ Android library and NuvioMobileDV integration are now explicitly included.
 | NuvioMobileDV native integration and verification | NOT STARTED | DV7 and mobile maintenance specification: exact AAR -> complete mobile verification and release preparation | Requires qualified Android AAR. |
 | Native and mobile release delivery verification | NOT STARTED | DV4, DV7: normal native release and signed mobile release, independently retrieved and verified; final reconciliation | Requires prior implementation stages to pass. |
 
-Current advancement blockers: build/runtime verification and publication have
-not yet occurred. No tracked deferrals within this bounded request.
+Current-stage advancement blockers: the corrected native build and actual
+Windows rendering checks have not yet passed. DV6-DV7 and final publication
+belong to the named later stages and are not acceptance criteria of this stage.
+No tracked deferrals within the current stage.
 
 Build diagnosis: initial run `42526378064` stopped at Meson's compiler sanity
 check because Wine inherited GitHub's differently owned home directory. The
@@ -67,6 +70,15 @@ produces a valid 206-byte file, below the original arbitrary 500-byte check.
 Validate PNG signature/IHDR/nonzero dimensions instead. The workflow accepts an
 existing build-run ID so verifier-only corrections exercise the same built DLL
 without recompiling the native stack; provenance remains in its manifest.
+
+Run `42527782064` completed native compilation and the executed Meson contracts
+(16 passed, one libmpv lifetime test skipped by Wine). Packaging then failed
+because the container shell did not inherit checkout's Git safe-directory
+configuration. Configure the exact owned checkout before all version/provenance
+probes. Failure artifacts now retain compiled CLI/DLL/header outputs plus build
+metadata, rather than only logs, enabling package recovery without recompilation.
+That completed runner did not upload its binaries, so those outputs cannot be
+retrieved; the corrected source requires a new build. No memory failure occurred.
 
 ## Build and rollback policy
 

@@ -38,7 +38,9 @@ still owns the Android AAR build and its platform-specific configuration.
 
 Native publication and Nuvio application promotion are separate. NuvioDesktopDV
 keeps its existing verified DLL until a replacement passes application integration
-and is pinned through its normal Windows release. Android binaries are unaffected.
+and is pinned through its normal Windows release. Updating Android's mpv pin,
+qualifying its ARM64 AAR and consuming it in NuvioMobileDV use the Android library
+pipeline; a Windows release does not update that AAR automatically.
 See the [bounded runtime specification](DOCS/NUVIODV_WINDOWS_RUNTIME_SPEC.md).
 
 The upstream README follows.

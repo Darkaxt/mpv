@@ -44,15 +44,22 @@ Android library and NuvioMobileDV integration are now explicitly included.
 
 | Stage | Status | Requirements / acceptance | Evidence and remaining work |
 | --- | --- | --- | --- |
-| Owned Dolby Vision build and verification | ACTIVE | DV1-DV3, DV5: complete pinned pipeline, accurate README, Windows runtime verification | Implement and run the build and runtime checks. |
-| Android native mpv update and AAR qualification | NOT STARTED | DV6 and Android library R1-R7: compatible pinned native stack and exact public ARM64 artifact | Requires the active Windows stage to close; no Android source change yet. |
+| Owned Dolby Vision build and verification | COMPLETE | DV1-DV3, DV5: complete pinned pipeline, accurate README, Windows runtime verification | Run `42529472063` succeeded at `b473072ac2e9a36d595dda9a3d071e8fccb74448`. Windows client API 2.6 loaded the DLL; GPU-next/D3D11 WARP rendered SDR and DV Profiles 5/8.1 with the expected color matrices. Inspected rendered frames and independently downloaded artifact/checksum. Native contracts passed with one Wine lifetime skip. |
+| Android native mpv update and AAR qualification | ACTIVE | DV6 and Android library R1-R7: compatible pinned native stack and exact public ARM64 artifact | Reconcile Android mpv/libplacebo pins and preserve the carried RPU/P010 patches, then build and inspect the public AAR. |
 | NuvioMobileDV native integration and verification | NOT STARTED | DV7 and mobile maintenance specification: exact AAR -> complete mobile verification and release preparation | Requires qualified Android AAR. |
 | Native and mobile release delivery verification | NOT STARTED | DV4, DV7: normal native release and signed mobile release, independently retrieved and verified; final reconciliation | Requires prior implementation stages to pass. |
 
-Current-stage advancement blockers: the corrected native build and actual
-Windows rendering checks have not yet passed. DV6-DV7 and final publication
-belong to the named later stages and are not acceptance criteria of this stage.
-No tracked deferrals within the current stage.
+Current-stage advancement blockers: Android native source/dependency update and
+AAR qualification remain. Mobile integration and final publication belong to
+their named later stages. No tracked deferrals within the current stage.
+
+Qualified Windows candidate: DLL SHA-256
+`ee27b3ca2b621a23a5d16c074767ee13fd81bc2cc215bf695cc085981e4591db`;
+archive SHA-256
+`a4ed90b0f7a890b2f8be642c00b4a34ba1b4ec8d9e1a013b836c0b368691a8e8`.
+Read back Windows report and workflow success, compared independently retrieved
+archive hash, and visually inspected the Profile 5/8.1 screenshots. Native public
+release remains assigned to the final delivery stage. No app DLL pin changed.
 
 Build diagnosis: initial run `42526378064` stopped at Meson's compiler sanity
 check because Wine inherited GitHub's differently owned home directory. The

@@ -38,6 +38,11 @@ not promotion into a Nuvio application release.
 Current advancement blockers: build/runtime verification and publication have
 not yet occurred. No tracked deferrals within this bounded request.
 
+Build diagnosis: initial run `42526378064` stopped at Meson's compiler sanity
+check because Wine inherited GitHub's differently owned home directory. The
+container now supplies an owned `/tmp/nuviodv-wine` prefix, as required by the
+upstream full-build workflow. No native compilation or memory failure occurred.
+
 ## Build and rollback policy
 
 Build on GitHub-hosted infrastructure, Windows x64 outputs only. No local WSL

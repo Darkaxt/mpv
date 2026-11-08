@@ -20,6 +20,8 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/btbn/ffmpeg-builds/win64-gpl@sha256:888d998d2eefb03ee924e120bd1c1f5061037037266309fbe71d854de2b630d6
+      env:
+        WINEPREFIX: /tmp/nuviodv-wine
     steps:
       - uses: actions/checkout@v4
         with:

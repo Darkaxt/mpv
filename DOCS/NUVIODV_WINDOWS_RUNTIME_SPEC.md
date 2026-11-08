@@ -47,19 +47,21 @@ Android library and NuvioMobileDV integration are now explicitly included.
 | Owned Dolby Vision build and verification | COMPLETE | DV1-DV3, DV5: complete pinned pipeline, accurate README, Windows runtime verification | Run `42529472063` succeeded at `b473072ac2e9a36d595dda9a3d071e8fccb74448`. Windows client API 2.6 loaded the DLL; GPU-next/D3D11 WARP rendered SDR and DV Profiles 5/8.1 with the expected color matrices. Inspected rendered frames and independently downloaded artifact/checksum. Native contracts passed with one Wine lifetime skip. |
 | Android native mpv update and AAR qualification | COMPLETE | DV6 and Android library R1-R7: compatible pinned native stack and exact public ARM64 artifact | Run `42532012258` passed at library source `84c7e40cb83ba66918edf4ce811b4a177b742c79`. Independently downloaded AAR SHA-256 `e8f5e4063a2db82a78c84350d8170ec7951a301488248b82b1bae9a4779bf02a` matches CI. Wrapper compatibility, all ARM64 ELF hashes/dependencies and both libdovi exports pass independent inspection. |
 | NuvioMobileDV native integration and verification | COMPLETE | DV7 and mobile maintenance specification: exact AAR -> complete mobile verification and release preparation | Vendored qualified AAR `e8f5e406...`, shared checksum gates in sync/release, version `0.6.10-nuviodv.2` / `12259`. Contracts, focused player tests and full debug APK passed under mutex ticket `009a8bd351384cb6917a797357760a92`, with 3 GiB shared in-process Kotlin/Gradle heap, two workers/no parallel projects and verified daemon exit. Actual APK metadata/native payload verified. |
-| Native and mobile release delivery verification | ACTIVE | DV4, DV7: normal native release and signed mobile release, independently retrieved and verified; final reconciliation | Commit/push verified mobile source, dispatch exact-source signed release, publish the qualified Windows artifact, independently retrieve/check both public packages and reconcile results. |
+| Native and mobile release delivery verification | COMPLETE | DV4, DV7: normal native release and signed mobile release, independently retrieved and verified; final reconciliation | Normal Windows release `nuviodv-windows-dv.1` targets `b473072ac2e9a36d595dda9a3d071e8fccb74448`. Normal Android release `v0.6.10-nuviodv.2`, code `12259`, targets `82c8dada01798eabf6111a9f473e794cc3ee0163`; release run `42535938912` passed. Both public packages independently downloaded and verified as detailed below. DV1-DV7 satisfied; no blocker or deferral remains. |
 
-Current-stage advancement blockers: native public release and normal signed
-mobile release publication/readback remain. No implementation blocker or tracked
-deferral remains; device playback validation is not claimed by these builds.
+Blockers and tracked deferrals: none. Final reconciliation satisfies DV1-DV7.
+Device playback validation is not claimed by these builds.
 
 Qualified Windows candidate: DLL SHA-256
 `ee27b3ca2b621a23a5d16c074767ee13fd81bc2cc215bf695cc085981e4591db`;
 archive SHA-256
 `a4ed90b0f7a890b2f8be642c00b4a34ba1b4ec8d9e1a013b836c0b368691a8e8`.
 Read back Windows report and workflow success, compared independently retrieved
-archive hash, and visually inspected the Profile 5/8.1 screenshots. Native public
-release remains assigned to the final delivery stage. No app DLL pin changed.
+archive hash, and visually inspected the Profile 5/8.1 screenshots. Normal public
+release `nuviodv-windows-dv.1` targets native source `b473072ac2e9a36d595dda9a3d071e8fccb74448`.
+Its public ZIP was independently retrieved: checksum, dependency/source manifest,
+required CLI/DLL/header/license/build-evidence entries and loaded client API 2.6
+all match. GitHub reports neither draft nor prerelease. No app DLL pin changed.
 
 Build diagnosis: initial run `42526378064` stopped at Meson's compiler sanity
 check because Wine inherited GitHub's differently owned home directory. The
@@ -89,13 +91,24 @@ retrieved; the corrected source requires a new build. No memory failure occurred
 
 ## Build and rollback policy
 
-Build on GitHub-hosted infrastructure, Windows x64 outputs only. No local WSL
-or Gradle build is required. Use two compiler workers. Pin the cross-build image
+Build Windows native outputs on GitHub-hosted infrastructure, x64 only. No local
+WSL is required. Android application verification uses the managed Windows Gradle
+gate recorded above. Use two native compiler workers. Pin the cross-build image
 by digest; explicitly pin source-built dependencies. Record the resolved image,
 tool versions, configured dependencies and full build logs in the artifact.
 
 NuvioDesktopDV continues to use DLL SHA-256
 `04e4d27dc385dc18ddd93fbe69c75e635b864f3c6ec53a9122df54c2f7842f4a`.
-NuvioMobileDV keeps its existing AAR until the newly authorized Android candidate
-passes native and application qualification. Windows native release publication
-does not change either app by itself. Preserve the prior AAR pin until promotion.
+NuvioMobileDV's qualified replacement AAR is committed at application source
+`82c8dada01798eabf6111a9f473e794cc3ee0163`; normal signed release run `42535938912`
+passed. The independently retrieved public APK for `v0.6.10-nuviodv.2` has SHA-256
+`3daaf2c07f29eb7e6e0c535a7b2625f9083707a81592f19c2447a48209362e29`.
+Verified package `com.darkaxt.nuviodv`, label `NuvioDV`, code `12259`, ARM64-only
+native code, valid v2 signature with the existing signer, and updater reference
+`Darkaxt/NuvioMobileDV`. All ten AAR native libraries, including the C++ runtime,
+match the published APK byte-for-byte; libmpv SHA-256 is
+`1c5bf5e2256b3a20fb41617cbd5d47b017d821c512f8dc850d88e617c1d0f8f8`.
+CI's generated authenticated runtime configuration checks passed. The prior
+AAR remains recoverable in Git history. Rollback publishes it with a higher
+Android version code, preserving app data. Windows native publication does not
+change the Desktop app by itself.

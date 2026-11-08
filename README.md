@@ -46,7 +46,9 @@ See the [bounded runtime specification](DOCS/NUVIODV_WINDOWS_RUNTIME_SPEC.md).
 The first Windows DV baseline qualified in
 [run 42529472063](https://github.com/Darkaxt/mpv/actions/runs/42529472063):
 client API 2.6 and GPU-next SDR/Profile 5/Profile 8.1 rendering passed on Windows.
-Native publication is recorded separately in the specification's delivery stage.
+The normal [Windows native DV release](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.1)
+contains that exact qualified build. Its independently retrieved ZIP checksum,
+source manifest and DLL client API match the qualification report.
 
 The upstream README follows.
 

@@ -2,6 +2,45 @@
 
 # mpv
 
+## NuvioDV Windows fork
+
+This personal fork owns the Windows x64 mpv/libmpv runtime used as the baseline
+for NuvioDesktopDV's player enhancements. It retains upstream mpv history and is
+covered by the same three-day maintenance check as the NuvioDV application forks.
+
+Dolby Vision support is supplied by **FFmpeg** (HEVC decoding and RPU metadata)
+and **libplacebo** (Dolby Vision reshaping, tone mapping and GPU-next rendering).
+It already exists in these upstream components: this fork integrates and pins
+their Windows build, rather than copying the Android Java/JNI wrapper or inventing
+a second Dolby Vision implementation. The pinned libplacebo contains OpenGL
+sync-object leak fix `c93aa134`, relevant to long-playback pipeline failures.
+
+Windows does not require a separate libdovi library for this pipeline. The
+separate [Android library fork](https://github.com/Darkaxt/mpv-android-libdovi)
+still owns the Android AAR build and its platform-specific configuration.
+
+- Build: manually dispatch **Build NuvioDV Windows libmpv**, optionally enabling
+  publication after its build and Windows runtime gates pass.
+- Outputs: Windows x64 `libmpv-2.dll`, CLI, public headers/import library, licenses,
+  exact dependency manifest, build evidence and SHA-256 checksums. No macOS/Linux
+  native releases are built by this fork's release workflow.
+- Inputs: [`sources.json`](TOOLS/nuviodv/sources.json) pins the cross-build image
+  and source dependencies. The workflow builds this fork's selected commit.
+  The maintained upstream full-MinGW build is reused, with two compiler workers.
+- Verification: actual DLL client API and GPU-next rendering of SDR and Dolby
+  Vision Profile 5/8.1 test streams on Windows, with software decoding/D3D11 WARP.
+  The release's verification report is authoritative for executed checks.
+- Limits: this does not promise native Dolby Vision HDMI/display signaling,
+  full Profile 7 FEL reconstruction, or certification of long-playback behavior.
+  AnimeJaNai and licensed SVP integration are subsequent work, not included here.
+
+Native publication and Nuvio application promotion are separate. NuvioDesktopDV
+keeps its existing verified DLL until a replacement passes application integration
+and is pinned through its normal Windows release. Android binaries are unaffected.
+See the [bounded runtime specification](DOCS/NUVIODV_WINDOWS_RUNTIME_SPEC.md).
+
+The upstream README follows.
+
 
 * [External links](#external-links)
 * [Overview](#overview)

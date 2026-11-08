@@ -25,12 +25,21 @@ CXXFLAGS="${CXXFLAGS/-I${FFBUILD_PREFIX}\/include/-isystem${FFBUILD_PREFIX}/incl
 gpl=false
 [[ $VARIANT == gpl* ]] && gpl=true
 
-gitclone="git clone --depth=1 --recursive --shallow-submodules"
+clone_source() {
+    local url=$1 destination=$2
+    shift 2
+    if [[ -n "${NUVIODV_SOURCE_LOCK:-}" ]]; then
+        python3 TOOLS/nuviodv/sources.py clone "$url" "$destination"
+    else
+        git clone --depth=1 --recursive --shallow-submodules "$@" "$url" "$destination"
+    fi
+}
+jobs=${NUVIODV_BUILD_JOBS:-$(nproc)}
 group() { echo "::group::$1"; }
 endgroup() { echo "::endgroup::"; }
 
 group "Building FFmpeg"
-$gitclone https://github.com/FFmpeg/FFmpeg.git ffmpeg
+clone_source https://github.com/FFmpeg/FFmpeg.git ffmpeg
 pushd ffmpeg
 # rav1e and librsvg bring their own Rust runtime, which clashes with subrandr's.
 ./configure --prefix="$FFBUILD_PREFIX" --pkg-config-flags="--static" \
@@ -41,13 +50,13 @@ pushd ffmpeg
             --cc="$CC" --cxx="$CXX" --ar="$AR" --ranlib="$RANLIB" --nm="$NM" \
             --enable-static --disable-shared --disable-{doc,programs} \
             --disable-{librav1e,librsvg,openal} || { cat ffbuild/config.log; exit 1; }
-make -j"$(nproc)"
+make -j"$jobs"
 make install
 popd
 endgroup
 
 group "Building LuaJIT"
-$gitclone -b v2.1 https://github.com/LuaJIT/LuaJIT.git
+clone_source https://github.com/LuaJIT/LuaJIT.git LuaJIT -b v2.1
 pushd LuaJIT
 # Strip -ldl, not needed for Windows.
 sed -i "/^Libs\.private/d" etc/luajit.pc
@@ -60,36 +69,36 @@ popd
 endgroup
 
 group "Building libsixel"
-$gitclone https://github.com/saitoha/libsixel.git
+clone_source https://github.com/saitoha/libsixel.git libsixel
 pushd libsixel
 ./configure --prefix="$FFBUILD_PREFIX" --host="$FFBUILD_TOOLCHAIN" --disable-shared \
             --disable-{img2sixel,sixel2png,python} --without-{jpeg,libcurl,png}
-make -j"$(nproc)"
+make -j"$jobs"
 make install
 popd
 endgroup
 
 group "Building libarchive"
-$gitclone https://github.com/libarchive/libarchive.git
+clone_source https://github.com/libarchive/libarchive.git libarchive
 mkdir -p libarchive/build
 pushd libarchive/build
 cmake -GNinja -DCMAKE_TOOLCHAIN_FILE="$FFBUILD_CMAKE_TOOLCHAIN" \
       -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$FFBUILD_PREFIX" \
       -DBUILD_SHARED_LIBS=OFF -DENABLE_{CAT,CPIO,TAR,TEST,UNZIP}=OFF \
       -DENABLE_{LIBXML2,OPENSSL,PCRE2POSIX}=OFF ..
-ninja install
+ninja -j"$jobs" install
 popd
 endgroup
 
 group "Building uchardet"
-$gitclone -b v0.0.8 https://gitlab.freedesktop.org/uchardet/uchardet.git
+clone_source https://gitlab.freedesktop.org/uchardet/uchardet.git uchardet -b v0.0.8
 mkdir -p uchardet/build
 pushd uchardet/build
 cmake -GNinja -DCMAKE_TOOLCHAIN_FILE="$FFBUILD_CMAKE_TOOLCHAIN" \
       -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$FFBUILD_PREFIX" \
       -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
       -DBUILD_SHARED_LIBS=OFF -DBUILD_BINARY=OFF ..
-ninja install
+ninja -j"$jobs" install
 popd
 endgroup
 
@@ -103,16 +112,21 @@ group "Building cppwinrt"
 # Windows metadata that windows-rs carries.
 cppwinrt_ver=2.0.250303.1
 windows_rs_ver=73
-wget -q "https://github.com/microsoft/cppwinrt/archive/${cppwinrt_ver}.tar.gz" -O - | tar -xz
-git clone --depth=1 --filter=blob:none --sparse -b "$windows_rs_ver" \
-    https://github.com/microsoft/windows-rs.git
-git -C windows-rs sparse-checkout set crates/libs/bindgen/default
+if [[ -n "${NUVIODV_SOURCE_LOCK:-}" ]]; then
+    clone_source https://github.com/microsoft/cppwinrt.git "cppwinrt-$cppwinrt_ver"
+    clone_source https://github.com/microsoft/windows-rs.git windows-rs
+else
+    wget -q "https://github.com/microsoft/cppwinrt/archive/${cppwinrt_ver}.tar.gz" -O - | tar -xz
+    git clone --depth=1 --filter=blob:none --sparse -b "$windows_rs_ver" \
+        https://github.com/microsoft/windows-rs.git
+    git -C windows-rs sparse-checkout set crates/libs/bindgen/default
+fi
 mkdir -p "cppwinrt-$cppwinrt_ver/build"
 pushd "cppwinrt-$cppwinrt_ver/build"
 CFLAGS="$HOST_CFLAGS" CXXFLAGS="$HOST_CXXFLAGS" LDFLAGS= \
     cmake -GNinja -DCMAKE_CXX_COMPILER="$HOST_CXX" -DCMAKE_BUILD_TYPE=Release \
           -DCPPWINRT_BUILD_VERSION="$cppwinrt_ver" ..
-ninja cppwinrt
+ninja -j"$jobs" cppwinrt
 ./cppwinrt -input ../../windows-rs/crates/libs/bindgen/default \
            -output "$FFBUILD_PREFIX/include"
 popd
@@ -120,7 +134,12 @@ endgroup
 
 group "Building mpv"
 mkdir -p subprojects
-meson wrap install mujs
+if [[ -n "${NUVIODV_SOURCE_LOCK:-}" ]]; then
+    clone_source https://github.com/ArtifexSoftware/mujs.git subprojects/mujs
+    cp TOOLS/nuviodv/mujs-meson.build subprojects/mujs/meson.build
+else
+    meson wrap install mujs
+fi
 meson subprojects download
 
 mpv_args=(
@@ -148,7 +167,7 @@ if $gpl; then
     mpv_args+=(-D{dvda,dvdnav,rubberband}=enabled)
 fi
 meson setup build "${mpv_args[@]}"
-meson compile -C build
+meson compile -C build -j "$jobs"
 endgroup
 
 group "Packaging"

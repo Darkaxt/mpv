@@ -1,0 +1,17 @@
+{
+  "release": "nuviodv-windows-dv.1",
+  "image": "ghcr.io/btbn/ffmpeg-builds/win64-gpl@sha256:888d998d2eefb03ee924e120bd1c1f5061037037266309fbe71d854de2b630d6",
+  "libplacebo_fix": "c93aa134ab62365ce1177efff99b8e1e66a818e7",
+  "sources": {
+    "https://github.com/FFmpeg/FFmpeg.git": "9a861e9687d30e657d59521817cad18405995983",
+    "https://github.com/haasn/libplacebo.git": "9fabf6d5057c40089afb020017c6347002b07308",
+    "https://github.com/LuaJIT/LuaJIT.git": "c5a2fa4df71eb5ee9c71bc7b32bb5630d18568d7",
+    "https://github.com/saitoha/libsixel.git": "3c9fd6a294b2d0338482f9a5d5772827d82cfa9d",
+    "https://github.com/libarchive/libarchive.git": "eb57ffefe20e98eb7ba05829ee1c23b90e589a71",
+    "https://gitlab.freedesktop.org/uchardet/uchardet.git": "ae6302a016088ad07177f86d417b20010053632b",
+    "https://github.com/afishhh/subrandr.git": "a41311bb5e382abcc47ef141e2ea1098d22a8d58",
+    "https://github.com/microsoft/cppwinrt.git": "69c78cfc7920367c4ce9cc024cf8c5b8d217fb1b",
+    "https://github.com/microsoft/windows-rs.git": "65c0c07b5b88ac031cf56acddd9f892efee1634a",
+    "https://github.com/ArtifexSoftware/mujs.git": "01a75ff4324ae8a54cae91a26edd38029424edaa"
+  }
+}

@@ -64,7 +64,13 @@ sed -i "/^Libs\.private/d" etc/luajit.pc
 make TARGET_SYS=Windows PREFIX="$FFBUILD_PREFIX" HOST_CC="$HOST_CC" \
      CFLAGS="$HOST_CFLAGS" CROSS="$FFBUILD_CROSS_PREFIX" TARGET_CFLAGS="$CFLAGS" \
      BUILDMODE=static XCFLAGS=-DLUAJIT_ENABLE_LUA52COMPAT FILE_T=luajit.exe \
-     INSTALL_DEP=src/luajit.exe amalg install
+     INSTALL_DEP=src/luajit.exe amalg
+# LuaJIT's install goal also invokes a build. Independent top-level goals race
+# under MAKEFLAGS=-j2, including simultaneous writes to host/minilua.o.
+make TARGET_SYS=Windows PREFIX="$FFBUILD_PREFIX" HOST_CC="$HOST_CC" \
+     CFLAGS="$HOST_CFLAGS" CROSS="$FFBUILD_CROSS_PREFIX" TARGET_CFLAGS="$CFLAGS" \
+     BUILDMODE=static XCFLAGS=-DLUAJIT_ENABLE_LUA52COMPAT FILE_T=luajit.exe \
+     INSTALL_DEP=src/luajit.exe install
 popd
 endgroup
 

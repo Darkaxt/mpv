@@ -62,6 +62,12 @@ host compiler invocations produced an invalid host/minilua object. The recipe
 now completes `amalg` before invoking `install`, retaining two compiler workers.
 This was a build-order failure, not a memory failure.
 
+Verification-script diagnosis: encoding the exact 64x64 SDR fixture as PNG
+produces a valid 206-byte file, below the original arbitrary 500-byte check.
+Validate PNG signature/IHDR/nonzero dimensions instead. The workflow accepts an
+existing build-run ID so verifier-only corrections exercise the same built DLL
+without recompiling the native stack; provenance remains in its manifest.
+
 ## Build and rollback policy
 
 Build on GitHub-hosted infrastructure, Windows x64 outputs only. No local WSL

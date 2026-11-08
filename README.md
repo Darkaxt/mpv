@@ -21,6 +21,8 @@ still owns the Android AAR build and its platform-specific configuration.
 
 - Build: manually dispatch **Build NuvioDV Windows libmpv**, optionally enabling
   publication after its build and Windows runtime gates pass.
+  Supply `artifact_run` to repeat Windows qualification against an existing
+  build artifact without recompilation; leave it empty for a new source build.
 - Outputs: Windows x64 `libmpv-2.dll`, CLI, public headers/import library, licenses,
   exact dependency manifest, build evidence and SHA-256 checksums. No macOS/Linux
   native releases are built by this fork's release workflow.

@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import struct
 import sys
 import urllib.request
 import zipfile
@@ -126,8 +127,10 @@ def verify(archive, backend='warp'):
                         raise RuntimeError(f'DV was not mapped: profile={found_profile}, matrix={matrix}')
                     screenshot = directory / f'{backend}-{profile}.png'
                     command(handle, 'screenshot-to-file', screenshot, 'video')
-                    if not screenshot.is_file() or screenshot.stat().st_size < 500:
-                        raise RuntimeError('Rendered screenshot missing or empty')
+                    png = screenshot.read_bytes()
+                    if (png[:8] != b'\x89PNG\r\n\x1a\n' or png[12:16] != b'IHDR'
+                            or len(png) < 24 or not all(struct.unpack('>II', png[16:24]))):
+                        raise RuntimeError('Rendered screenshot is not a valid nonempty PNG')
                     report['cases'].append({'profile': profile, 'detected_profile': found_profile,
                         'matrix': matrix, 'vo': vo, 'screenshot_sha256': hashlib.sha256(screenshot.read_bytes()).hexdigest()})
                     break

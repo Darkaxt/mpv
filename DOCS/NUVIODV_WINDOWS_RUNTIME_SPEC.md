@@ -46,12 +46,12 @@ Android library and NuvioMobileDV integration are now explicitly included.
 | --- | --- | --- | --- |
 | Owned Dolby Vision build and verification | COMPLETE | DV1-DV3, DV5: complete pinned pipeline, accurate README, Windows runtime verification | Run `42529472063` succeeded at `b473072ac2e9a36d595dda9a3d071e8fccb74448`. Windows client API 2.6 loaded the DLL; GPU-next/D3D11 WARP rendered SDR and DV Profiles 5/8.1 with the expected color matrices. Inspected rendered frames and independently downloaded artifact/checksum. Native contracts passed with one Wine lifetime skip. |
 | Android native mpv update and AAR qualification | COMPLETE | DV6 and Android library R1-R7: compatible pinned native stack and exact public ARM64 artifact | Run `42532012258` passed at library source `84c7e40cb83ba66918edf4ce811b4a177b742c79`. Independently downloaded AAR SHA-256 `e8f5e4063a2db82a78c84350d8170ec7951a301488248b82b1bae9a4779bf02a` matches CI. Wrapper compatibility, all ARM64 ELF hashes/dependencies and both libdovi exports pass independent inspection. |
-| NuvioMobileDV native integration and verification | ACTIVE | DV7 and mobile maintenance specification: exact AAR -> complete mobile verification and release preparation | Consume the exact qualified AAR, advance the fork counter/Android code and pass required contracts/full Android verification without changing unrelated app behavior. |
-| Native and mobile release delivery verification | NOT STARTED | DV4, DV7: normal native release and signed mobile release, independently retrieved and verified; final reconciliation | Requires prior implementation stages to pass. |
+| NuvioMobileDV native integration and verification | COMPLETE | DV7 and mobile maintenance specification: exact AAR -> complete mobile verification and release preparation | Vendored qualified AAR `e8f5e406...`, shared checksum gates in sync/release, version `0.6.10-nuviodv.2` / `12259`. Contracts, focused player tests and full debug APK passed under mutex ticket `009a8bd351384cb6917a797357760a92`, with 3 GiB shared in-process Kotlin/Gradle heap, two workers/no parallel projects and verified daemon exit. Actual APK metadata/native payload verified. |
+| Native and mobile release delivery verification | ACTIVE | DV4, DV7: normal native release and signed mobile release, independently retrieved and verified; final reconciliation | Commit/push verified mobile source, dispatch exact-source signed release, publish the qualified Windows artifact, independently retrieve/check both public packages and reconcile results. |
 
-Current-stage advancement blockers: mobile AAR integration, version/code advance
-and required application verification remain. Final publication belongs to its
-named delivery stage. No tracked deferrals within the current stage.
+Current-stage advancement blockers: native public release and normal signed
+mobile release publication/readback remain. No implementation blocker or tracked
+deferral remains; device playback validation is not claimed by these builds.
 
 Qualified Windows candidate: DLL SHA-256
 `ee27b3ca2b621a23a5d16c074767ee13fd81bc2cc215bf695cc085981e4591db`;

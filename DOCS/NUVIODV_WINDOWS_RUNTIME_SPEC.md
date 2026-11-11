@@ -54,14 +54,16 @@ Android library has zero missing upstream commits and successful AAR run
 | Maintenance stage | Status | Required acceptance / remaining work |
 | --- | --- | --- |
 | Android sync and normal delivery | COMPLETE | Source `e261d52ac` contains inspected upstream `4135f96cd`. Normal release `v0.6.12-nuviodv.1` / `12261` passes full Linux tests, signed build and authentication checks in run `43089796486`. Independent public APK SHA-256 `0ca27acd37c6d9eaceb83cd58956946b437ec34b244e2fa9e216c4de08179f8e`, signer/identity/updater and all ten pinned native libraries pass. Sync `43084002957` attempt 2 is a verified no-op. Mobile specification records complete failure/correction evidence; no test shadows or download production changes remain. |
-| Desktop sync, Windows release and local upgrade | BLOCKED | Source `868730fb1736b184768a02952667a6514ad93701` integrates inspected upstream; full local tests/MSI and fork contracts passed. External GitHub Actions major outage `dvy0t3mvh1lg` prevents public delivery: original run `43096139223` returned internal startup failure, then its supported rerun remains queued without jobs. Retain that exact run, inspect its actual completion after service recovery, independently verify its public MSI and install through the broker. Existing installation `1.1.3504` and profiles remain unchanged. |
-| Windows native sync and qualified release | ACTIVE | Integrate 27 inspected upstream commits with unchanged compatible dependency pins, advance native release counter, pass pinned native build and real Windows SDR/P5/P8.1 checks, publish and independently verify normal native artifacts without app DLL promotion. |
-| Issue delta triage and final reconciliation | NOT STARTED | Inspect relevant new/updated open Android issues since previous check, report only new evidence-backed candidates, reconcile source containment/releases/local installation and remove expendable task artifacts. |
+| Desktop sync, Windows release and local upgrade | ACTIVE | Source `868730fb1736b184768a02952667a6514ad93701` integrates inspected upstream; full local tests/MSI and fork contracts passed. GitHub Actions incident `dvy0t3mvh1lg` caused startup failure; GitHub reports recovery at 21:07 UTC. Original run `43096139223` rerun remains queued without jobs. Resume the original monitor and wait for actual completion, independently verify its public MSI and install through the broker. Existing installation `1.1.3504` and profiles remain unchanged. |
+| Windows native sync and qualified release | COMPLETE | Normal release `nuviodv-windows-dv.2` from `6b4a48dfff89306a091f6d16e23c5aa888e2727f`, run `43101201701`, passes pinned native build/contracts and real Windows GPU-next SDR/P5/P8.1 checks. Independently retrieved ZIP `c7d406eacf434bfd07f81c9e5c73710aa12099548c4db0f4e03f5f00553d9148` and all public asset hashes match. DLL `df30ec9b4c458c778640e0aee93e46a8f0636abb981fb6d442e5aeef8149562d` loads API 2.6 locally; source/dependency lock, licenses, build/runtime evidence and DV frames inspected. Exact temporary DLL extraction cleaned after loader process exit. No app pin changed. |
+| Issue delta triage and final reconciliation | BLOCKED | Issue delta inspection is finished with no newly actionable native-player evidence; final integrated delivery reconciliation/cleanup depends on the still-incomplete Desktop delivery stage. Resume after its public-package and installed-version criteria pass or a concrete external delivery blocker is established. |
 
-Desktop is parked on the confirmed external Actions outage, not on elapsed queue
-time. Original monitor session `10797` remains attached to run `43096139223`.
-Prioritize returning to its delivery when service recovery makes it actionable.
-No tracked deferral. Only one maintenance stage may be ACTIVE.
+The service outage was a concrete external parking condition; after GitHub
+reported recovery, Desktop resumed as the single ACTIVE stage. Original monitor
+session `10797` remains attached to run `43096139223`. Native qualification
+completed in original run `43101201701`. Final reconciliation is parked on its
+unmet Desktop prerequisite, not treated as complete. No tracked deferral.
+Only one maintenance stage may be ACTIVE.
 The completed baseline delivery below remains historical evidence.
 
 Native source reconciliation: normal merge of inspected upstream `bcde6b93cc`

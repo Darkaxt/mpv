@@ -50,6 +50,16 @@ The normal [Windows native DV release](https://github.com/Darkaxt/mpv/releases/t
 contains that exact qualified build. Its independently retrieved ZIP checksum,
 source manifest and DLL client API match the qualification report.
 
+The current maintained baseline is
+[`nuviodv-windows-dv.2`](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.2),
+from source `6b4a48dfff89306a091f6d16e23c5aa888e2727f`, including upstream through
+`bcde6b93cc`. [Run 43101201701](https://github.com/Darkaxt/mpv/actions/runs/43101201701)
+passed the complete pinned native build and Windows GPU-next SDR/Profile 5/8.1
+qualification. Its independently retrieved archive is SHA-256
+`c7d406eacf434bfd07f81c9e5c73710aa12099548c4db0f4e03f5f00553d9148`;
+DLL API 2.6 and the exact unchanged dependency lock were checked independently.
+This native release does not change either Nuvio application's pinned runtime.
+
 The upstream README follows.
 
 

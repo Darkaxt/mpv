@@ -24,5 +24,5 @@ files = [directory / 'nuviodv-windows-x64.zip', directory / 'SHA256SUMS',
          directory / 'verification-warp.json']
 files += sorted(directory.glob('warp-*.png')) + sorted(directory.glob('warp-*.log'))
 subprocess.run(['gh', 'release', 'create', tag, '--repo', 'Darkaxt/mpv',
-                '--target', report['mpv_source'], '--title', 'NuvioDV Windows libmpv — Dolby Vision baseline 1',
+                '--target', report['mpv_source'], '--title', f'NuvioDV Windows libmpv — {tag}',
                 '--notes-file', str(notes), '--latest', *map(str, files)], check=True)

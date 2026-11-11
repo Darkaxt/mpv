@@ -42,6 +42,40 @@ Android library and NuvioMobileDV integration are now explicitly included.
 
 ## Execution and reconciliation
 
+### 2026-11-11 scheduled maintenance
+
+Authorization: the recurring three-day maintenance instruction covers Android,
+Desktop, Windows native mpv and the Android library, with normal releases and
+independent artifact verification. Inspected upstream tips: Android `4135f96cd`,
+Desktop `37ce07d35`, native mpv `bcde6b93cc`. All four checkouts were clean.
+Android library has zero missing upstream commits and successful AAR run
+`42532012258`; its existing qualified pin is retained without rebuilding.
+
+| Maintenance stage | Status | Required acceptance / remaining work |
+| --- | --- | --- |
+| Android sync and normal delivery | COMPLETE | Source `e261d52ac` contains inspected upstream `4135f96cd`. Normal release `v0.6.12-nuviodv.1` / `12261` passes full Linux tests, signed build and authentication checks in run `43089796486`. Independent public APK SHA-256 `0ca27acd37c6d9eaceb83cd58956946b437ec34b244e2fa9e216c4de08179f8e`, signer/identity/updater and all ten pinned native libraries pass. Sync `43084002957` attempt 2 is a verified no-op. Mobile specification records complete failure/correction evidence; no test shadows or download production changes remain. |
+| Desktop sync, Windows release and local upgrade | BLOCKED | Source `868730fb1736b184768a02952667a6514ad93701` integrates inspected upstream; full local tests/MSI and fork contracts passed. External GitHub Actions major outage `dvy0t3mvh1lg` prevents public delivery: original run `43096139223` returned internal startup failure, then its supported rerun remains queued without jobs. Retain that exact run, inspect its actual completion after service recovery, independently verify its public MSI and install through the broker. Existing installation `1.1.3504` and profiles remain unchanged. |
+| Windows native sync and qualified release | ACTIVE | Integrate 27 inspected upstream commits with unchanged compatible dependency pins, advance native release counter, pass pinned native build and real Windows SDR/P5/P8.1 checks, publish and independently verify normal native artifacts without app DLL promotion. |
+| Issue delta triage and final reconciliation | NOT STARTED | Inspect relevant new/updated open Android issues since previous check, report only new evidence-backed candidates, reconcile source containment/releases/local installation and remove expendable task artifacts. |
+
+Desktop is parked on the confirmed external Actions outage, not on elapsed queue
+time. Original monitor session `10797` remains attached to run `43096139223`.
+Prioritize returning to its delivery when service recovery makes it actionable.
+No tracked deferral. Only one maintenance stage may be ACTIVE.
+The completed baseline delivery below remains historical evidence.
+
+Native source reconciliation: normal merge of inspected upstream `bcde6b93cc`
+adds 27 commits, including Windows playback timer handling and archive stream
+position fixes. Its Meson change replaces `ntdll` with `winmm`; it does not raise
+the FFmpeg/libplacebo requirements. Upstream's cross-image rename only changes
+the reusable build script's documentation. The owned workflow retains the exact
+previous image digest and every source pin, including libplacebo leak-fix ancestry.
+Candidate tag advances to `nuviodv-windows-dv.2`; the publisher now derives its
+title from that tag rather than falsely naming every release baseline 1.
+The complete pinned native build and real Windows SDR/P5/P8.1 qualification remain
+mandatory before publication. No application AAR/DLL promotion is authorized by
+this native source merge.
+
 | Stage | Status | Requirements / acceptance | Evidence and remaining work |
 | --- | --- | --- | --- |
 | Owned Dolby Vision build and verification | COMPLETE | DV1-DV3, DV5: complete pinned pipeline, accurate README, Windows runtime verification | Run `42529472063` succeeded at `b473072ac2e9a36d595dda9a3d071e8fccb74448`. Windows client API 2.6 loaded the DLL; GPU-next/D3D11 WARP rendered SDR and DV Profiles 5/8.1 with the expected color matrices. Inspected rendered frames and independently downloaded artifact/checksum. Native contracts passed with one Wine lifetime skip. |

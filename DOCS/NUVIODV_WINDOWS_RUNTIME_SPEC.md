@@ -54,15 +54,43 @@ Android library has zero missing upstream commits and successful AAR run
 | Maintenance stage | Status | Required acceptance / remaining work |
 | --- | --- | --- |
 | Android sync and normal delivery | COMPLETE | Source `e261d52ac` contains inspected upstream `4135f96cd`. Normal release `v0.6.12-nuviodv.1` / `12261` passes full Linux tests, signed build and authentication checks in run `43089796486`. Independent public APK SHA-256 `0ca27acd37c6d9eaceb83cd58956946b437ec34b244e2fa9e216c4de08179f8e`, signer/identity/updater and all ten pinned native libraries pass. Sync `43084002957` attempt 2 is a verified no-op. Mobile specification records complete failure/correction evidence; no test shadows or download production changes remain. |
-| Desktop sync, Windows release and local upgrade | ACTIVE | Source `868730fb1736b184768a02952667a6514ad93701` integrates inspected upstream; full local tests/MSI and fork contracts passed. GitHub Actions incident `dvy0t3mvh1lg` caused startup failure; GitHub reports recovery at 21:07 UTC. Original run `43096139223` rerun remains queued without jobs. Resume the original monitor and wait for actual completion, independently verify its public MSI and install through the broker. Existing installation `1.1.3504` and profiles remain unchanged. |
+| Desktop sync, Windows release and local upgrade | BLOCKED | Source `868730fb1736b184768a02952667a6514ad93701` integrates inspected upstream; full local tests/MSI and fork contracts passed. External GitHub orchestration inconsistency after incident `dvy0t3mvh1lg`: original run `43096139223` reports queued / attempt 1 with zero jobs, attempt 1 independently reports completed / startup_failure, and supported cancellation refuses because it considers the run completed. GitHub declared its backlog drained at 21:21 UTC; this is not a duration-based queue classification. No public `.5` release exists. Preserve the same identity and inspect for a consistent terminal/running state before supported recovery; never dispatch a duplicate. Independent public MSI verification, broker installation and installed/configuration/profile checks remain unmet. Installed `1.1.3504` is preserved. |
 | Windows native sync and qualified release | COMPLETE | Normal release `nuviodv-windows-dv.2` from `6b4a48dfff89306a091f6d16e23c5aa888e2727f`, run `43101201701`, passes pinned native build/contracts and real Windows GPU-next SDR/P5/P8.1 checks. Independently retrieved ZIP `c7d406eacf434bfd07f81c9e5c73710aa12099548c4db0f4e03f5f00553d9148` and all public asset hashes match. DLL `df30ec9b4c458c778640e0aee93e46a8f0636abb981fb6d442e5aeef8149562d` loads API 2.6 locally; source/dependency lock, licenses, build/runtime evidence and DV frames inspected. Exact temporary DLL extraction cleaned after loader process exit. No app pin changed. |
-| Issue delta triage and final reconciliation | BLOCKED | Issue delta inspection is finished with no newly actionable native-player evidence; final integrated delivery reconciliation/cleanup depends on the still-incomplete Desktop delivery stage. Resume after its public-package and installed-version criteria pass or a concrete external delivery blocker is established. |
+| Issue delta triage and final reconciliation | COMPLETE | All four pushed source branches contain their inspected upstream tips; Android sync/release and unchanged Android AAR workflow are healthy, native DV 2 normal release is independently verified. Full paginated issue delta and baseline comments yield no newly actionable native-player evidence. Desktop's external blocker is recorded without claiming release/install completion. Reviewed cleanup `3ae4bd06e9b6685a3cf003e9344cdd69` applied 45 exact spent members / 394510230 bytes; native DLL extraction transaction `a5ed0c7f232902e6069c6e5b107920dd` applied 2 / 161483776 bytes after loader exit. Only six exact pending-Desktop recovery inputs remain in the documented E: recovery folder; no task D: scratch remains. |
 
-The service outage was a concrete external parking condition; after GitHub
-reported recovery, Desktop resumed as the single ACTIVE stage. Original monitor
-session `10797` remains attached to run `43096139223`. Native qualification
-completed in original run `43101201701`. Final reconciliation is parked on its
-unmet Desktop prerequisite, not treated as complete. No tracked deferral.
+Desktop resumed after reported service recovery, then its conflicting run/attempt
+states and rejected cancellation established a concrete external orchestration
+blocker. Original managed monitor identity is session `10797`, workflow
+`43096139223`; no build was cancelled. Native qualification completed in original
+run `43101201701`. No tracked deferral or ACTIVE implementation stage remains;
+Desktop remains BLOCKED, so the overall requested maintenance is incomplete.
+
+Final independent reconciliation: Android `5fd2caa9c` contains inspected upstream
+`4135f96cd`; Desktop application source `868730fb1` (later evidence-only docs)
+contains `37ce07d35`; native source `6b4a48dfff` (later evidence-only docs) contains
+`bcde6b93cc`; Android wrapper `27bde9f7` is unchanged and zero behind FortunasXP.
+Origin branch readbacks match the corresponding local commits. Android signed
+normal release `v0.6.12-nuviodv.1` targets `e261d52ac`; native normal release
+`nuviodv-windows-dv.2` targets `6b4a48dfff`; both have independently checked public
+assets. Native packaged test evidence has zero failures and one known Wine-only
+skip; the separate real Windows SDR/P5/P8.1 runtime gate passed. No app pin was
+promoted. Local Gradle gates acquired the shared Windows mutex, used initial
+3 GiB Gradle/Kotlin heaps, two workers/no parallel projects and one test fork,
+reported no memory failure and verified whole-tree exit. No local WSL ran.
+
+Resume Desktop by inspecting run `43096139223` plus its attempt endpoint until
+GitHub's conflicting states reconcile. The accepted rerun must not be duplicated;
+supported recovery requires a consistent terminal state or the existing actual
+job result. Then verify normal `.5` release/tag/source, independently download
+its exact public MSI, inspect version/configuration/checksums, install through
+the elevation broker and verify installed/public JAR equality and preserved
+profiles. Installed MSI remains `1.1.3504`; no administrator request was submitted
+because a public replacement does not exist. Only the identity-checked local
+`gh run watch` process was stopped when the external API blocker was established;
+the GitHub workflow was not cancelled. Pending helper/baseline inputs at
+`E:\Temp\nuviodv-maintenance-20261111-recovery` are retained for this exact consumer
+and must be removed transactionally after delivery finishes. The Desktop parity
+specification records the same recovery contract. No new feature stage passed.
 Only one maintenance stage may be ACTIVE.
 The completed baseline delivery below remains historical evidence.
 

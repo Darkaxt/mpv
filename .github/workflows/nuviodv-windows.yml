@@ -1,0 +1,87 @@
+name: Build NuvioDV Windows libmpv
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the qualified native release
+        type: boolean
+        default: false
+      artifact_run:
+        description: Optional completed build run ID for Windows requalification without recompilation
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nuviodv-windows-native
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: inputs.artifact_run == ''
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/btbn/ffmpeg-builds/win64-gpl@sha256:888d998d2eefb03ee924e120bd1c1f5061037037266309fbe71d854de2b630d6
+      env:
+        WINEPREFIX: /tmp/nuviodv-wine
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build pinned Windows runtime and run native unit contracts
+        run: bash TOOLS/nuviodv/build-windows.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuviodv-windows-x64
+          path: nuviodv-windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: native-build-diagnostics
+          path: |
+            artifact/
+            artifact-libmpv/
+            nuviodv-windows-x64/
+            TOOLS/nuviodv/sources.json
+            build/common/version.h
+            build/meson-info/
+            build/meson-logs/
+            libplacebo/build/meson-logs/
+            ffmpeg/ffbuild/config.log
+
+  windows:
+    needs: build
+    if: ${{ !cancelled() && (needs.build.result == 'success' || inputs.artifact_run != '') }}
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuviodv-windows-x64
+          path: delivery
+          run-id: ${{ inputs.artifact_run || github.run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify real Windows DLL and GPU-next playback
+        run: python TOOLS/nuviodv/verify-windows.py delivery/nuviodv-windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qualified-nuviodv-windows-x64
+          path: |
+            delivery/*.zip
+            delivery/*.json
+            delivery/*.png
+            delivery/*.log
+            delivery/SHA256SUMS
+      - name: Publish normal native release
+        if: inputs.publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python TOOLS/nuviodv/publish.py delivery
+        # Publication permission is scoped to this verified job below.
+    permissions:
+      contents: write
+      actions: read

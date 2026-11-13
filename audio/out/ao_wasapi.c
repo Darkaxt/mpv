@@ -540,8 +540,15 @@ const struct ao_driver audio_out_wasapi = {
     .hotplug_init   = hotplug_init,
     .hotplug_uninit = hotplug_uninit,
     .priv_size      = sizeof(wasapi_state),
+    .priv_defaults  = &(const struct wasapi_state){
+        .opt_device_role = eMultimedia,
+    },
     .options_prefix = "wasapi",
     .options        = (const struct m_option[]) {
+        {"session-id", OPT_STRING(opt_session_id)},
+        {"device-role", OPT_CHOICE(opt_device_role,
+            {"console", eConsole}, {"multimedia", eMultimedia},
+            {"communications", eCommunications})},
         {"exclusive-buffer", OPT_CHOICE(opt_exclusive_buffer,
             {"default", 0}, {"min", -1}), M_RANGE(1, 2000000)},
         {0}

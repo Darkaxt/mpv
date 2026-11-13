@@ -17,8 +17,10 @@ Built from Darkaxt/mpv branch `nuviodv-animejanai` (the-database/mpv with the ow
 NuvioDV tooling merged) with pinned OpenSSL, FFmpeg and libplacebo, the OpenGL
 sync-object leak correction and the vendored Windows/NVIDIA Vulkan presentation
 patches. Includes `vf=animejanai`, VapourSynth support and the optional GPL
-`ajn-mvtools.dll`. Windows libmpv API and GPU-next SDR/Profile 5/Profile 8.1 rendering
-verified with software decoding and D3D11 WARP.
+`ajn-mvtools.dll`, and the WASAPI explicit audio-session and device-role options.
+Windows libmpv API and GPU-next SDR/Profile 5/Profile 8.1 rendering verified with
+software decoding and D3D11 WARP. Separate GNU debug files for the stripped DLLs are
+in `nuviodv-windows-x64-symbols.zip` when that asset is present.
 
 Qualification candidate only: not promoted into Nuvio. The AnimeJaNai inference
 library, TensorRT runtime and models are not part of this package.
@@ -37,6 +39,7 @@ integration follow separately. Native Dolby Vision display signaling, full Profi
 ''')
 files = [directory / 'nuviodv-windows-x64.zip', directory / 'SHA256SUMS',
          directory / 'verification-warp.json']
+files += sorted(directory.glob('nuviodv-windows-x64-symbols.zip'))
 files += sorted(directory.glob('warp-*.png')) + sorted(directory.glob('warp-*.log'))
 subprocess.run(['gh', 'release', 'create', tag, '--repo', 'Darkaxt/mpv',
                 '--target', report['mpv_source'], '--title', f'NuvioDV Windows libmpv — {tag}',

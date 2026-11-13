@@ -195,6 +195,8 @@ if $gpl; then
     # Only the GPL image carries the dependencies of the GPL features.
     mpv_args+=(-D{dvda,dvdnav,rubberband}=enabled -Dajn-mvtools=true)
 fi
+# Owned builds keep separate GNU debug files; the shipped DLLs are stripped as before.
+[[ -n "${NUVIODV_DEBUG_SYMBOLS:-}" ]] && mpv_args+=(-Ddebug=true)
 meson setup build "${mpv_args[@]}"
 meson compile -C build -j "$jobs"
 endgroup
@@ -215,7 +217,23 @@ if [[ -f build/video/filter/mvtools/ajn-mvtools.dll ]]; then
 fi
 cp -p "$FFBUILD_PREFIX"/share/java/libbluray-*.jar artifact/
 cp -p "$FFBUILD_PREFIX"/share/java/libbluray-*.jar artifact-libmpv/
-"${FFBUILD_CROSS_PREFIX}strip" artifact/mpv.{exe,com} artifact-libmpv/libmpv*.dll
-[[ -f artifact-libmpv/ajn-mvtools.dll ]] && "${FFBUILD_CROSS_PREFIX}strip" artifact-libmpv/ajn-mvtools.dll
+# With NUVIODV_DEBUG_SYMBOLS, keep each library's debug info in artifact-debug/
+# and link it from the stripped DLL (objcopy --only-keep-debug / --add-gnu-debuglink).
+strip_binary() {
+    local binary=$1 debug
+    if [[ -n "${NUVIODV_DEBUG_SYMBOLS:-}" && $binary == *.dll ]]; then
+        mkdir -p artifact-debug
+        debug=artifact-debug/$(basename "$binary").debug
+        "${FFBUILD_CROSS_PREFIX}objcopy" --only-keep-debug "$binary" "$debug"
+        "${FFBUILD_CROSS_PREFIX}strip" "$binary"
+        "${FFBUILD_CROSS_PREFIX}objcopy" --add-gnu-debuglink="$debug" "$binary"
+    else
+        "${FFBUILD_CROSS_PREFIX}strip" "$binary"
+    fi
+}
+for binary in artifact/mpv.exe artifact/mpv.com artifact-libmpv/libmpv*.dll; do
+    strip_binary "$binary"
+done
+[[ -f artifact-libmpv/ajn-mvtools.dll ]] && strip_binary artifact-libmpv/ajn-mvtools.dll
 ls -l artifact artifact-libmpv
 endgroup

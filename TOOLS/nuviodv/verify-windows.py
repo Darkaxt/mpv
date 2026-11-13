@@ -140,8 +140,10 @@ def verify(archive, backend='warp'):
             mpv.mpv_terminate_destroy(handle)
             (directory / f'{backend}-{profile}.log').write_text(''.join(logs), encoding='utf-8')
     (directory / f'verification-{backend}.json').write_text(json.dumps(report, indent=2) + '\n')
-    checksum = hashlib.sha256(archive.read_bytes()).hexdigest()
-    (directory / 'SHA256SUMS').write_text(f'{checksum}  {archive.name}\n')
+    # Every delivered zip: the runtime and, when built, its separate debug symbols.
+    sums = [f'{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n'
+            for path in sorted(archive.parent.glob('nuviodv-windows-x64*.zip'))]
+    (directory / 'SHA256SUMS').write_text(''.join(sums))
     print(json.dumps(report, indent=2))
 
 

@@ -36,7 +36,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: nuviodv-windows-x64
-          path: nuviodv-windows-x64.zip
+          path: |
+            nuviodv-windows-x64.zip
+            nuviodv-windows-x64-symbols.zip
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

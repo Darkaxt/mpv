@@ -47,6 +47,18 @@ manifest = {
                    for name in ('libplacebo', 'ffmpeg', 'subrandr')},
     'qualification': 'Native Windows GPU-next smoke tests are recorded separately; no app promotion.',
 }
+# Separate GNU debug files (see ci/build-mingw64-full.sh); the runtime zip's file list is unchanged.
+debug = root / 'artifact-debug'
+if debug.is_dir():
+    symbols = root / 'nuviodv-windows-x64-symbols'
+    shutil.copytree(debug, symbols)
+    manifest['debug_symbols'] = {
+        'archive': symbols.name + '.zip',
+        'method': 'objcopy --only-keep-debug; strip; objcopy --add-gnu-debuglink',
+        'files': {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+                  for path in sorted(symbols.iterdir())},
+    }
+    shutil.make_archive(str(symbols), 'zip', root, symbols.name)
 (package / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
 shutil.make_archive(str(root / 'nuviodv-windows-x64'), 'zip', root, package.name)
 print(json.dumps(manifest, indent=2))

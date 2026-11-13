@@ -119,6 +119,9 @@ test('linked-list', linked_list)
 ajn_sample_shared = executable('ajn-sample-shared', files('ajn_sample_shared.c'), include_directories: incdir)
 test('ajn-sample-shared', ajn_sample_shared)
 
+ajn_timing = executable('ajn-timing', files('ajn_timing.c'), include_directories: incdir, dependencies: libm)
+test('ajn-timing', ajn_timing)
+
 if win32
     ajn_sample_lifetime = executable('ajn-sample-lifetime', files('ajn_sample_lifetime.c'), include_directories: incdir)
     test('ajn-sample-lifetime', ajn_sample_lifetime)

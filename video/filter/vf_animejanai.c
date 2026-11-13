@@ -77,7 +77,16 @@
 #include "video/mp_image_pool.h"
 
 #include "aji.h"
+
+#ifdef CUDAAPI
+#define AJN_CUDAAPI CUDAAPI
+#elif defined(_WIN32)
+#define AJN_CUDAAPI __stdcall
+#else
+#define AJN_CUDAAPI
+#endif
 #include "ajn_scene.h"
+#include "ajn_timing.h"
 
 #ifdef _WIN32
 #define AJI_DEFAULT_LIB "aji.dll"
@@ -219,6 +228,17 @@ struct priv {
     int      decode_evt_next;
     bool     decode_evt_ok;
 
+    // GPU-completed per-frame inference timing (CUDA upscale chains only):
+    // a start/end event pair per in-flight frame, read back once its ticket
+    // completed. cuEventElapsedTime is not in ffnvcodec's function table, so
+    // it is resolved from the driver library directly.
+    CUevent  time_evt[MAX_DEPTH][2];
+    int      time_next;
+    bool     time_init, time_ok;
+    void    *nvcuda;
+    CUresult (AJN_CUDAAPI *event_elapsed)(float *ms, CUevent start, CUevent end);
+    struct ajn_timing timing;
+
     bool is_d3d11;
 #if HAVE_D3D11
     ID3D11Device *d3d_dev;          // borrowed; av_device_ref keeps it alive
@@ -262,6 +282,7 @@ struct priv {
         struct mp_image *src;
         struct mp_image *out;
         uint64_t ticket;
+        int time_slot;   // index into time_evt, or -1 when not timed
     } ring[MAX_DEPTH];
     int ring_n;
     int depth;
@@ -345,6 +366,141 @@ static bool order_after_decode(struct mp_filter *vf)
               CHECK_CU(p->cu->cuStreamWaitEvent(p->stream, ev, 0)) >= 0;
     p->cu->cuCtxPopCurrent(&dummy);
     return ok;
+}
+
+// Minimum samples for a partial window reported at teardown.
+#define AJN_TIMING_MIN_PARTIAL 24
+
+// Versioned, path-free timing line for the trusted libmpv host:
+// AJN_TIMING_V1 <frames> <mean_ms> <p50_ms> <p95_ms> <max_ms> <slot>
+static void timing_report(struct mp_filter *vf, int min_frames)
+{
+    struct priv *p = vf->priv;
+    struct ajn_timing_summary s;
+    if (!ajn_timing_take(&p->timing, min_frames, &s))
+        return;
+    mp_msg(vf->log, p->opts->stream_mode ? MSGL_INFO : MSGL_V,
+           "AJN_TIMING_V1 %d %.3f %.3f %.3f %.3f %d\n", s.frames, s.mean_ms,
+           s.p50_ms, s.p95_ms, s.max_ms, p->cur_slot);
+}
+
+// Lazily create the timing events in the current CUDA context. Failure
+// disables timing; inference is unaffected.
+static void timing_setup(struct mp_filter *vf)
+{
+    struct priv *p = vf->priv;
+    if (p->time_init)
+        return;
+    p->time_init = true;
+    p->time_ok = false;
+    if (!p->event_elapsed) {
+        if (!p->nvcuda) {
+#ifdef _WIN32
+            p->nvcuda = aji_lib_open("nvcuda.dll");
+#else
+            p->nvcuda = aji_lib_open("libcuda.so.1");
+#endif
+        }
+        if (p->nvcuda)
+            p->event_elapsed = aji_lib_sym(p->nvcuda, "cuEventElapsedTime");
+        if (!p->event_elapsed) {
+            MP_VERBOSE(vf, "cuEventElapsedTime unavailable; no inference timing\n");
+            return;
+        }
+    }
+    CUcontext dummy;
+    if (p->cu->cuCtxPushCurrent(p->cuda_ctx) != CUDA_SUCCESS)
+        return;
+    bool ok = true;
+    for (int i = 0; i < MAX_DEPTH; i++) {
+        for (int j = 0; j < 2; j++) {
+            p->time_evt[i][j] = NULL;
+            ok = ok && p->cu->cuEventCreate(&p->time_evt[i][j],
+                                            CU_EVENT_DEFAULT) == CUDA_SUCCESS;
+        }
+    }
+    if (!ok) {
+        for (int i = 0; i < MAX_DEPTH; i++) {
+            for (int j = 0; j < 2; j++) {
+                if (p->time_evt[i][j])
+                    p->cu->cuEventDestroy(p->time_evt[i][j]);
+                p->time_evt[i][j] = NULL;
+            }
+        }
+        MP_VERBOSE(vf, "timing event setup failed; no inference timing\n");
+    }
+    p->cu->cuCtxPopCurrent(&dummy);
+    p->time_ok = ok;
+    p->time_next = 0;
+}
+
+// Record one of the frame's timing events on the inference stream.
+static bool timing_record(struct mp_filter *vf, int slot, int which)
+{
+    struct priv *p = vf->priv;
+    CUcontext dummy;
+    if (p->cu->cuCtxPushCurrent(p->cuda_ctx) != CUDA_SUCCESS)
+        return false;
+    bool ok = p->cu->cuEventRecord(p->time_evt[slot][which],
+                                   p->stream) == CUDA_SUCCESS;
+    p->cu->cuCtxPopCurrent(&dummy);
+    return ok;
+}
+
+// Start timing a CUDA upscale submission; returns the event slot or -1.
+static int timing_begin(struct mp_filter *vf)
+{
+    struct priv *p = vf->priv;
+    if (p->is_d3d11 || p->rife_on || !p->cu || !p->cuda_ctx)
+        return -1;
+    timing_setup(vf);
+    if (!p->time_ok)
+        return -1;
+    // A slot is reused only after MAX_DEPTH newer submissions; the ring
+    // holds fewer than MAX_DEPTH frames, so its previous frame was emitted.
+    int slot = p->time_next;
+    p->time_next = (p->time_next + 1) % MAX_DEPTH;
+    return timing_record(vf, slot, 0) ? slot : -1;
+}
+
+// Read a completed frame's GPU time (its ticket was waited).
+static void timing_collect(struct mp_filter *vf, int slot)
+{
+    struct priv *p = vf->priv;
+    if (slot < 0 || !p->time_ok)
+        return;
+    float ms = -1;
+    CUcontext dummy;
+    if (p->cu->cuCtxPushCurrent(p->cuda_ctx) != CUDA_SUCCESS)
+        return;
+    CUresult r = p->event_elapsed(&ms, p->time_evt[slot][0],
+                                  p->time_evt[slot][1]);
+    p->cu->cuCtxPopCurrent(&dummy);
+    if (r == CUDA_SUCCESS && ajn_timing_add(&p->timing, ms))
+        timing_report(vf, AJN_TIMING_WINDOW);
+}
+
+// Report the partial window and destroy the events (context-bound).
+static void timing_release(struct mp_filter *vf)
+{
+    struct priv *p = vf->priv;
+    timing_report(vf, AJN_TIMING_MIN_PARTIAL);
+    if (p->time_ok && p->cu && p->cuda_ctx) {
+        CUcontext dummy;
+        if (p->cu->cuCtxPushCurrent(p->cuda_ctx) == CUDA_SUCCESS) {
+            for (int i = 0; i < MAX_DEPTH; i++) {
+                for (int j = 0; j < 2; j++) {
+                    if (p->time_evt[i][j])
+                        p->cu->cuEventDestroy(p->time_evt[i][j]);
+                }
+            }
+            p->cu->cuCtxPopCurrent(&dummy);
+        }
+    }
+    for (int i = 0; i < MAX_DEPTH; i++)
+        p->time_evt[i][0] = p->time_evt[i][1] = NULL;
+    p->time_init = p->time_ok = false;
+    p->time_next = 0;
 }
 
 static void aji_log_bridge(void *opaque, int level, const char *msg)
@@ -470,6 +626,7 @@ static void release_device_state(struct mp_filter *vf)
     // runs on the decode stream and is not tracked in the ring.
     clear_ring(vf);
     drain_backend(vf);
+    timing_release(vf);
 
     mp_image_unrefp(&p->rife_prev);
     for (int i = 0; i < p->outq_n; i++)
@@ -635,6 +792,8 @@ static bool configure_aji(struct mp_filter *vf)
         return true;
     }
 
+    // a timing window never mixes slots or geometries
+    timing_report(vf, AJN_TIMING_MIN_PARTIAL);
     p->api.set_slot(p->aji, p->pending_slot);
     p->cur_slot = p->pending_slot;
 
@@ -1012,6 +1171,7 @@ static bool submit_frame(struct mp_filter *vf, struct mp_image *in, int rel)
     const int sit = map_siting(&p->params);
     bool ok;
     void *stream = NULL;
+    int time_slot = -1;
 
 #if HAVE_D3D11
     if (p->is_d3d11) {
@@ -1081,6 +1241,7 @@ static bool submit_frame(struct mp_filter *vf, struct mp_image *in, int rel)
             return false;
         }
         stream = p->stream;
+        time_slot = timing_begin(vf);
         if (p->temporal_r && rel >= 0) {
             ok = ingest_window(vf, rel) &&
                  p->api.infer_seq(p->aji, p->seq0 + rel, &fout,
@@ -1088,6 +1249,8 @@ static bool submit_frame(struct mp_filter *vf, struct mp_image *in, int rel)
         } else {
             ok = p->api.infer(p->aji, &fin, &fout, p->stream) == AJI_OK;
         }
+        if (time_slot >= 0 && (!ok || !timing_record(vf, time_slot, 1)))
+            time_slot = -1;
     }
 
     uint64_t ticket = ok ? p->api.flush(p->aji, stream) : 0;
@@ -1103,6 +1266,7 @@ static bool submit_frame(struct mp_filter *vf, struct mp_image *in, int rel)
     p->ring[p->ring_n].src = in;
     p->ring[p->ring_n].out = out;
     p->ring[p->ring_n].ticket = ticket;
+    p->ring[p->ring_n].time_slot = time_slot;
     p->ring_n++;
     return true;
 }
@@ -1116,6 +1280,7 @@ static struct mp_image *pop_ring(struct mp_filter *vf)
     mp_assert(p->ring_n > 0);
     struct mp_image *out = p->ring[0].out;
     uint64_t ticket = p->ring[0].ticket;
+    int time_slot = p->ring[0].time_slot;
     p->ring_n--;
     memmove(&p->ring[0], &p->ring[1], p->ring_n * sizeof(p->ring[0]));
 
@@ -1124,6 +1289,7 @@ static struct mp_image *pop_ring(struct mp_filter *vf)
         talloc_free(out);
         return NULL;
     }
+    timing_collect(vf, time_slot);
     return out;
 }
 
@@ -2041,6 +2207,9 @@ static void uninit(struct mp_filter *vf)
     struct priv *p = vf->priv;
 
     flush_frames(vf);
+    timing_release(vf);
+    if (p->nvcuda)
+        aji_lib_close(p->nvcuda);
     ajn_scene_destroy(p->scene);
     p->scene = NULL;
     talloc_free(p->queue);

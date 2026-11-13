@@ -123,8 +123,9 @@ static HRESULT STDMETHODCALLTYPE sIMMNotificationClient_OnDefaultDeviceChanged(
     change_notify *change = (change_notify *)This;
     struct ao *ao = change->ao;
 
-    // don't care about "eCapture" or non-"eMultimedia" roles
-    if (flow == eCapture || role != eMultimedia) return S_OK;
+    struct wasapi_state *state = ao->priv;
+    // Only the configured playback role can change this default endpoint.
+    if (flow == eCapture || role != state->opt_device_role) return S_OK;
 
     if (change->is_hotplug) {
         MP_VERBOSE(ao,

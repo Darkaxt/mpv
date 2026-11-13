@@ -731,13 +731,26 @@ static HRESULT fix_format(struct ao *ao, bool align_hack)
         MP_VERBOSE(state, "Trying buffer duration %lld us\n", bufferDuration / 10);
 
     MP_DBG(state, "IAudioClient::Initialize\n");
+    GUID session_guid;
+    LPCGUID session = NULL;
+    if (state->opt_session_id && state->opt_session_id[0]) {
+        wchar_t *name = mp_from_utf8(NULL, state->opt_session_id);
+        if (!name) {
+            hr = E_OUTOFMEMORY;
+            goto exit_label;
+        }
+        hr = CLSIDFromString(name, &session_guid);
+        talloc_free(name);
+        EXIT_ON_ERROR(hr);
+        session = &session_guid;
+    }
     hr = IAudioClient_Initialize(state->pAudioClient,
                                  state->share_mode,
                                  AUDCLNT_STREAMFLAGS_EVENTCALLBACK,
                                  bufferDuration,
                                  bufferDuration,
                                  &(state->format.Format),
-                                 NULL);
+                                 session);
     EXIT_ON_ERROR(hr);
 
     MP_DBG(state, "IAudioClient::Initialize pRenderClient\n");
@@ -887,11 +900,11 @@ static struct device_desc *device_desc_for_num(struct enumerator *e, UINT i)
     return d;
 }
 
-static struct device_desc *default_device_desc(struct enumerator *e)
+static struct device_desc *default_device_desc(struct enumerator *e, ERole role)
 {
     IMMDevice *pDevice = NULL;
     HRESULT hr = IMMDeviceEnumerator_GetDefaultAudioEndpoint(
-        e->pEnumerator, eRender, eMultimedia, &pDevice);
+        e->pEnumerator, eRender, role, &pDevice);
     if (FAILED(hr)) {
         MP_ERR(e, "Error from GetDefaultAudioEndpoint: %s\n",
                mp_HRESULT_to_str(hr));
@@ -971,7 +984,8 @@ LPWSTR wasapi_find_deviceID(struct ao *ao)
 
     if (!device.len) {
         MP_VERBOSE(ao, "No device specified. Selecting default.\n");
-        d = default_device_desc(enumerator);
+        struct wasapi_state *state = ao->priv;
+        d = default_device_desc(enumerator, state->opt_device_role);
         deviceID = select_device(ao->log, d);
         goto exit_label;
     }

@@ -42,6 +42,41 @@ Android library and NuvioMobileDV integration are now explicitly included.
 
 ## Execution and reconciliation
 
+### 2026-11-14 recurring maintenance
+
+The current cross-repository stage ledger is the November 14 section of
+`C:\Users\darka\Documents\Projects\Desktop\NuvioDesktop\NUVIODESKTOP_PARITY_SPEC.md`.
+Desktop delivery is COMPLETE: normal `0.1.36-nuviodv.1`, run `43649060098`, source
+`a73c18937`; independent public MSI and installed/configuration/profile checks pass.
+Android origin is zero behind inspected upstream `ba149964c`, with successful daily
+sync/release `.7`; its local checkout was cleanly fast-forwarded. Android wrapper
+`27bde9f7` remains zero behind FortunasXP with healthy AAR run `42532012258`.
+Do not rebuild unchanged Android artifacts or change application native pins.
+
+Native maintenance is ACTIVE. Canonical `D:\Projects\mpv` remains untouched on
+`nuviodv-animejanai` at `814006b7fa`; its already shipped feature runtime is
+preserved. An exact disposable detached-master worktree at
+`D:\Temp\nuviodv-maintenance-20261114-mpv-master` isolates this maintenance from
+that binding. D: is used for Git/native-source small-file I/O; remove the worktree
+through the installed disposable-repository cleanup contract once its final
+source commit is pushed and retained by origin/master and no consumer remains.
+
+The normal merge contains inspected upstream `bb4823e5f0` (six commits) and keeps
+the remote master's WASAPI session/default-device-role patch `162b1ce46c`.
+The Windows timer change requires native runtime verification. No dependency
+minimum changed; retain every immutable image/dependency pin and libplacebo
+`c93aa134` ancestry. Advance only the native baseline counter to
+`nuviodv-windows-dv.3`. Source is ready for qualification, not yet verified.
+Run the complete pinned native build/contracts and actual Windows GPU-next
+SDR/Profile 5/Profile 8.1 checks on GitHub-hosted infrastructure, then publish a
+normal release and independently verify tag/source, hashes, manifest, licenses,
+evidence and DLL API. No local WSL/Gradle/native build is needed for this stage.
+Application DLL/AAR promotion and new enhancement features remain outside scope.
+
+The November 11 Desktop blocker recorded below is historical: it was recovered
+on November 12, and its application delivery is superseded by the verified
+November 14 installation. The old phantom run is not an active native build.
+
 ### 2026-11-11 scheduled maintenance
 
 Authorization: the recurring three-day maintenance instruction covers Android,

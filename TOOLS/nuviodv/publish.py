@@ -16,8 +16,8 @@ sync-object leak correction. Windows libmpv API and GPU-next SDR/Profile 5/Profi
 8.1 rendering verified with software decoding and D3D11 WARP. Screenshots, runtime
 logs, dependency lock, build evidence and checksums accompany the package.
 
-This native release does not replace Nuvio's installed DLL. AnimeJaNai and SVP
-integration follow separately. Native Dolby Vision display signaling, full Profile
+This native baseline does not replace Nuvio's pinned enhancement DLL. The shipped
+AnimeJaNai/SVP runtime is maintained separately. Native Dolby Vision display signaling, full Profile
 7 FEL and long-playback compatibility are not certified by this smoke test.
 ''')
 files = [directory / 'nuviodv-windows-x64.zip', directory / 'SHA256SUMS',

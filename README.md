@@ -34,7 +34,8 @@ still owns the Android AAR build and its platform-specific configuration.
   The release's verification report is authoritative for executed checks.
 - Limits: this does not promise native Dolby Vision HDMI/display signaling,
   full Profile 7 FEL reconstruction, or certification of long-playback behavior.
-  AnimeJaNai and licensed SVP integration are subsequent work, not included here.
+  The shipped AnimeJaNai/SVP runtime is maintained on `nuviodv-animejanai`;
+  this master baseline does not replace either application's pinned runtime.
 
 Native publication and Nuvio application promotion are separate. NuvioDesktopDV
 keeps its existing verified DLL until a replacement passes application integration
@@ -61,6 +62,12 @@ DLL API 2.6 and the exact unchanged dependency lock were checked independently.
 This native release does not change either Nuvio application's pinned runtime.
 
 The upstream README follows.
+
+Maintenance candidate `nuviodv-windows-dv.3` contains upstream through `bb4823e5f0`,
+retaining the master's authorized WASAPI session/default-role patch. Every build
+image and dependency commit remains pinned to the prior qualified baseline.
+Its full build and actual Windows SDR/Profile 5/Profile 8.1 qualification report
+must pass before publication; source synchronization alone is not qualification.
 
 
 * [External links](#external-links)

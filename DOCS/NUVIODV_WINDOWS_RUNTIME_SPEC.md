@@ -53,7 +53,7 @@ sync/release `.7`; its local checkout was cleanly fast-forwarded. Android wrappe
 `27bde9f7` remains zero behind FortunasXP with healthy AAR run `42532012258`.
 Do not rebuild unchanged Android artifacts or change application native pins.
 
-Native maintenance is ACTIVE. Canonical `D:\Projects\mpv` remains untouched on
+Native qualification and delivery are COMPLETE. Canonical `D:\Projects\mpv` remains untouched on
 `nuviodv-animejanai` at `814006b7fa`; its already shipped feature runtime is
 preserved. An exact disposable detached-master worktree at
 `D:\Temp\nuviodv-maintenance-20261114-mpv-master` isolates this maintenance from
@@ -66,11 +66,21 @@ the remote master's WASAPI session/default-device-role patch `162b1ce46c`.
 The Windows timer change requires native runtime verification. No dependency
 minimum changed; retain every immutable image/dependency pin and libplacebo
 `c93aa134` ancestry. Advance only the native baseline counter to
-`nuviodv-windows-dv.3`. Source is ready for qualification, not yet verified.
-Run the complete pinned native build/contracts and actual Windows GPU-next
-SDR/Profile 5/Profile 8.1 checks on GitHub-hosted infrastructure, then publish a
-normal release and independently verify tag/source, hashes, manifest, licenses,
-evidence and DLL API. No local WSL/Gradle/native build is needed for this stage.
+`nuviodv-windows-dv.3`. Run `43650453489` completed the pinned build and actual
+Windows GPU-next SDR/Profile 5/Profile 8.1 checks, then published the normal native
+release from `436e1f060ab471a231ec246edd648de7e0c7da4f`. Independently retrieved
+ZIP SHA-256 `2d18f5a13d58570a5118620615190d4af8bec23d68627b60e3e93fed1090a478`
+matches GitHub's asset digest and SHA256SUMS. Exact source/dependency lock, licenses,
+headers/import library, CLI and build evidence pass inspection. Native contracts
+report 16 passed, zero failed and one Wine-only skip; actual Windows qualification
+covers the delivered DLL separately. The DLL SHA-256 is
+`5a0113967b118ca640bd5f8aa783913f0b8917f9a0b18431e920b7b0fb553f71`;
+independent Windows loading confirms API 2.6. Both DV screenshots show valid mapped
+frames and their hashes match the report. This is short WARP/D3D11 qualification,
+not physical HDR signaling or long-playback certification. The exact temporary
+DLL extraction was removed immediately after loader exit through reviewed
+transaction `66bc2b600b406051dfaa759240d68e5e` (2 members / 161484800 bytes).
+No local WSL/Gradle/native build was needed for this stage.
 Application DLL/AAR promotion and new enhancement features remain outside scope.
 
 The November 11 Desktop blocker recorded below is historical: it was recovered

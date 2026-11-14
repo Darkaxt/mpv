@@ -52,22 +52,21 @@ contains that exact qualified build. Its independently retrieved ZIP checksum,
 source manifest and DLL client API match the qualification report.
 
 The current maintained baseline is
-[`nuviodv-windows-dv.2`](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.2),
-from source `6b4a48dfff89306a091f6d16e23c5aa888e2727f`, including upstream through
-`bcde6b93cc`. [Run 43101201701](https://github.com/Darkaxt/mpv/actions/runs/43101201701)
+[`nuviodv-windows-dv.3`](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.3),
+from source `436e1f060ab471a231ec246edd648de7e0c7da4f`, including upstream through
+`bb4823e5f0`. [Run 43650453489](https://github.com/Darkaxt/mpv/actions/runs/43650453489)
 passed the complete pinned native build and Windows GPU-next SDR/Profile 5/8.1
 qualification. Its independently retrieved archive is SHA-256
-`c7d406eacf434bfd07f81c9e5c73710aa12099548c4db0f4e03f5f00553d9148`;
+`2d18f5a13d58570a5118620615190d4af8bec23d68627b60e3e93fed1090a478`;
 DLL API 2.6 and the exact unchanged dependency lock were checked independently.
 This native release does not change either Nuvio application's pinned runtime.
 
-The upstream README follows.
+The baseline retains the master's authorized WASAPI session/default-role patch.
+Every build image and dependency commit remains pinned to the prior qualified
+baseline. Its DLL SHA-256 is
+`5a0113967b118ca640bd5f8aa783913f0b8917f9a0b18431e920b7b0fb553f71`.
 
-Maintenance candidate `nuviodv-windows-dv.3` contains upstream through `bb4823e5f0`,
-retaining the master's authorized WASAPI session/default-role patch. Every build
-image and dependency commit remains pinned to the prior qualified baseline.
-Its full build and actual Windows SDR/Profile 5/Profile 8.1 qualification report
-must pass before publication; source synchronization alone is not qualification.
+The upstream README follows.
 
 
 * [External links](#external-links)

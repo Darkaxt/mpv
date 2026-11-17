@@ -76,6 +76,20 @@ checks. Reuse the original workflow identity after dispatch; no duplicate build.
 Application DLL/AAR pins and the shipped P7 feature runtime are not promoted or
 merged by this baseline work. No new enhancement acceptance is claimed.
 
+Original run `44197733666` successfully builds exact native source
+`7e14bd6985283420edf8aa872edf0dd412de912e` and passes native contracts. Windows
+qualification then fails before playback at fixture retrieval: raw.githubusercontent
+returns HTTP 429. No native release is published. The bounded repair uses
+Chromium's canonical Gitiles tree at the same immutable Chromium commit, decodes
+its documented base64 Git blob, checks the existing SHA-256 before writing, and
+records the verification-source commit / fixture origin in the runtime report.
+The real canonical-host retrieval passes for both unchanged fixtures (4537752 and
+3528195 bytes, exact original hashes). No retry loop, new dependency pin or reduced
+runtime criterion is introduced. Reuse original build artifact `44197733666` with
+the existing `artifact_run` input for Windows requalification; the binary remains
+source `7e14bd6985`, while the report identifies the corrected verifier separately.
+No duplicate native compilation is required for this network-only verifier change.
+
 ### 2026-11-14 recurring maintenance
 
 The current cross-repository stage ledger is the November 14 section of

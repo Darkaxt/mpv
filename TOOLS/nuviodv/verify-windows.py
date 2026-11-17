@@ -1,10 +1,12 @@
 """Exercise the delivered DLL on real Windows, including GPU-next DV mapping."""
 import ctypes as C
+import base64
 import hashlib
 import json
 import os
 from pathlib import Path
 import struct
+import subprocess
 import sys
 import urllib.request
 import zipfile
@@ -16,6 +18,16 @@ FIXTURES = {
           '2cbedc36cf1ec2fdaaa54d26942ff93faeda4d4b2baf9fd25ee74bfebc15287e'),
 }
 CHROMIUM = '42f97fae10fbc8754f31dee18264a99d3124b93f'
+FIXTURE_SOURCE = f'https://chromium.googlesource.com/chromium/src/+/{CHROMIUM}/media/test/data'
+
+
+def fetch_fixture(target, name, expected):
+    """Fetch the exact Git blob from Chromium's canonical immutable Gitiles tree."""
+    with urllib.request.urlopen(f'{FIXTURE_SOURCE}/{name}?format=TEXT') as response:
+        payload = base64.b64decode(b''.join(response.read().split()), validate=True)
+    if hashlib.sha256(payload).hexdigest() != expected:
+        raise RuntimeError(f'Fixture integrity failed: {name}')
+    target.write_bytes(payload)
 
 
 class Event(C.Structure):
@@ -83,12 +95,11 @@ def verify(archive, backend='warp'):
     cases = [('sdr', sdr)]
     for profile, (name, expected) in FIXTURES.items():
         target = fixtures / name
-        url = f'https://raw.githubusercontent.com/chromium/chromium/{CHROMIUM}/media/test/data/{name}'
-        urllib.request.urlretrieve(url, target)
-        if hashlib.sha256(target.read_bytes()).hexdigest() != expected:
-            raise RuntimeError(f'Fixture integrity failed: {name}')
+        fetch_fixture(target, name, expected)
         cases.append((profile, target))
     report = {'mpv_source': manifest['mpv_source'], 'api_version': api,
+              'verification_source': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+              'fixture_source': FIXTURE_SOURCE,
               'dll_sha256': hashlib.sha256(dll.read_bytes()).hexdigest(),
               'backend': backend, 'cases': []}
     for profile, sample in cases:

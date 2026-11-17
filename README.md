@@ -66,6 +66,12 @@ Every build image and dependency commit remains pinned to the prior qualified
 baseline. Its DLL SHA-256 is
 `5a0113967b118ca640bd5f8aa783913f0b8917f9a0b18431e920b7b0fb553f71`.
 
+November 17 maintenance candidate `nuviodv-windows-dv.4` includes upstream through
+`f92afa75cd`, with its GPU-next renderer/context refactor. Its full pinned build
+and Windows SDR/Profile 5/8.1 qualification are required before publication;
+the delivered baseline above remains current until those gates pass. All image
+and dependency pins, the WASAPI patch and application runtime pins are retained.
+
 The upstream README follows.
 
 

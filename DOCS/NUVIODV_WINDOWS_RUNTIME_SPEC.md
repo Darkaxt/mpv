@@ -42,6 +42,40 @@ Android library and NuvioMobileDV integration are now explicitly included.
 
 ## Execution and reconciliation
 
+### 2026-11-17 recurring maintenance (ACTIVE)
+
+The November 17 cross-repository ledger is Desktop `NUVIODESKTOP_PARITY_SPEC.md`.
+Android normal `v1.1.0-nuviodv.1` and Desktop normal `0.1.37-nuviodv.1` are delivered
+and independently verified; the latter is installed as MSI 1.1.3701. Their native
+pins and shipped Anime4K / AnimeJaNai / SVP behavior remain required invariants.
+The Android wrapper remains unchanged and healthy; do not rebuild its AAR.
+
+Canonical `D:\Projects\mpv` stays clean on `nuviodv-animejanai` at
+`814006b7fa3776cfe8500633f28294653a675aad`. Master is maintained only in owned
+detached worktree `D:\Temp\nuviodv-maintenance-20261117-mpv-master`, using D: for
+Git/native-source small-file I/O. Cleanup transaction
+`5694ed2435bad17ac3018b549c43ed8e` records that exact path before creation. Once its
+final clean HEAD is pushed and retained, add the disposable linked-worktree proof,
+review both worktree/private administrative roots and remove them immediately
+through the installed helper. Shared Git state and the feature checkout survive.
+
+The conflict-free normal merge includes 57 commits through inspected upstream
+`f92afa75cdb06e077a9ecd9a9ec2eb36b16327c2`, including GPU-next renderer/context
+refactoring and Windows association changes. Preserve WASAPI patch `162b1ce46c`.
+Meson adds the split renderer source without raising dependency minima. Changes
+to tarball versions in `ci/build-mingw64.sh` do not affect this owned workflow,
+which uses `ci/build-mingw64-full.sh` and the exact existing container/dependency
+lock. No compatibility reason justifies changing those pins; retain every one,
+including libplacebo `9fabf6d5` / `c93aa134` ancestry. Only candidate release counter
+advances to `nuviodv-windows-dv.4`.
+
+Required acceptance remains the complete pinned native build/contracts, actual
+Windows DLL API and GPU-next SDR/Profile 5/Profile 8.1 qualification, normal
+publication, and independent source/lock/license/hash/build/runtime evidence
+checks. Reuse the original workflow identity after dispatch; no duplicate build.
+Application DLL/AAR pins and the shipped P7 feature runtime are not promoted or
+merged by this baseline work. No new enhancement acceptance is claimed.
+
 ### 2026-11-14 recurring maintenance
 
 The current cross-repository stage ledger is the November 14 section of

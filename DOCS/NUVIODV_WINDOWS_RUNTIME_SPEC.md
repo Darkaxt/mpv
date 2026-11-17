@@ -42,7 +42,7 @@ Android library and NuvioMobileDV integration are now explicitly included.
 
 ## Execution and reconciliation
 
-### 2026-11-17 recurring maintenance (ACTIVE)
+### 2026-11-17 recurring maintenance
 
 The November 17 cross-repository ledger is Desktop `NUVIODESKTOP_PARITY_SPEC.md`.
 Android normal `v1.1.0-nuviodv.1` and Desktop normal `0.1.37-nuviodv.1` are delivered
@@ -89,6 +89,33 @@ runtime criterion is introduced. Reuse original build artifact `44197733666` wit
 the existing `artifact_run` input for Windows requalification; the binary remains
 source `7e14bd6985`, while the report identifies the corrected verifier separately.
 No duplicate native compilation is required for this network-only verifier change.
+
+Qualification and public native delivery pass. Requalification run `44200966496`
+attempt 1 encountered HTTP 504 from Chromium's gateway, again before playback.
+The supported failed-job rerun on the same identity (attempt 2) succeeds; its build
+job is skipped and it consumes exact original artifact `44197733666`. All real
+Windows GPU-next SDR/Profile 5/Profile 8.1 checks pass, followed by normal
+`nuviodv-windows-dv.4` publication at binary source `7e14bd6985`. Runtime evidence
+explicitly identifies verifier source `22ff2fd7b752257e935767205793ea2dbd8f8475`
+and the immutable canonical Chromium fixture origin.
+
+Independent public retrieval verifies tag/source/normal state and every GitHub
+asset digest. ZIP SHA-256
+`55e88ac1b36c2af8a5f3477b32c519f42fc7764592d8253a0248db9e2a25c570` also matches
+SHA256SUMS. The exact source/dependency manifest, unchanged lock, licenses, public
+headers/import library, CLI, build configuration and test evidence pass. Native
+contracts report zero failures and the existing single Wine-only skip. The public
+DLL SHA-256 `0fc5a186fb8648eda2226d29d1137fc9e4f27fe304c88884632ca202fb3a27bd`
+independently loads API 2.6 on Windows. SDR and both DV rendered frames are visibly
+valid and match report hashes. This is short WARP/D3D11 qualification, without
+claims about physical HDR signaling or long-playback certification.
+
+After the isolated loader process exits, its exact D: extraction is removed via
+reviewed transaction `ce45d5eba8ba0e78a7f0bb0774ca926d` (2 members / 161487872 bytes,
+zero exclusions/residuals). The cross-repository Desktop ledger records final
+worktree/private-registration cleanup after this evidence commit is pushed. That
+ledger is authoritative for maintenance-stage execution status. Both application
+native pins and canonical feature checkout remain unchanged.
 
 ### 2026-11-14 recurring maintenance
 

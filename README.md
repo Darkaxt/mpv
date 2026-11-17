@@ -52,25 +52,22 @@ contains that exact qualified build. Its independently retrieved ZIP checksum,
 source manifest and DLL client API match the qualification report.
 
 The current maintained baseline is
-[`nuviodv-windows-dv.3`](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.3),
-from source `436e1f060ab471a231ec246edd648de7e0c7da4f`, including upstream through
-`bb4823e5f0`. [Run 43650453489](https://github.com/Darkaxt/mpv/actions/runs/43650453489)
+[`nuviodv-windows-dv.4`](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.4),
+from source `7e14bd6985283420edf8aa872edf0dd412de912e`, including upstream through
+`f92afa75cd`. [Run 44197733666](https://github.com/Darkaxt/mpv/actions/runs/44197733666)
 passed the complete pinned native build and Windows GPU-next SDR/Profile 5/8.1
-qualification. Its independently retrieved archive is SHA-256
-`2d18f5a13d58570a5118620615190d4af8bec23d68627b60e3e93fed1090a478`;
+qualification then passed in [run 44200966496, attempt 2](https://github.com/Darkaxt/mpv/actions/runs/44200966496)
+using that original build artifact. Fixture retrieval now uses Chromium's canonical
+immutable Gitiles tree, with unchanged hashes; the runtime report identifies the
+verifier revision separately from the binary source. Its independently retrieved archive is SHA-256
+`55e88ac1b36c2af8a5f3477b32c519f42fc7764592d8253a0248db9e2a25c570`;
 DLL API 2.6 and the exact unchanged dependency lock were checked independently.
 This native release does not change either Nuvio application's pinned runtime.
 
 The baseline retains the master's authorized WASAPI session/default-role patch.
 Every build image and dependency commit remains pinned to the prior qualified
 baseline. Its DLL SHA-256 is
-`5a0113967b118ca640bd5f8aa783913f0b8917f9a0b18431e920b7b0fb553f71`.
-
-November 17 maintenance candidate `nuviodv-windows-dv.4` includes upstream through
-`f92afa75cd`, with its GPU-next renderer/context refactor. Its full pinned build
-and Windows SDR/Profile 5/8.1 qualification are required before publication;
-the delivered baseline above remains current until those gates pass. All image
-and dependency pins, the WASAPI patch and application runtime pins are retained.
+`0fc5a186fb8648eda2226d29d1137fc9e4f27fe304c88884632ca202fb3a27bd`.
 
 The upstream README follows.
 

@@ -55,7 +55,7 @@ The current maintained baseline is
 [`nuviodv-windows-dv.4`](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.4),
 from source `7e14bd6985283420edf8aa872edf0dd412de912e`, including upstream through
 `f92afa75cd`. [Run 44197733666](https://github.com/Darkaxt/mpv/actions/runs/44197733666)
-passed the complete pinned native build and Windows GPU-next SDR/Profile 5/8.1
+passed the complete pinned native build. Windows GPU-next SDR/Profile 5/8.1
 qualification then passed in [run 44200966496, attempt 2](https://github.com/Darkaxt/mpv/actions/runs/44200966496)
 using that original build artifact. Fixture retrieval now uses Chromium's canonical
 immutable Gitiles tree, with unchanged hashes; the runtime report identifies the

@@ -68,6 +68,24 @@ and API checks remain required. No local WSL or Gradle build is needed. Retain t
 original workflow identity to actual completion, without duplicate dispatch.
 Material evidence is also recorded in Desktop docs/WINDOWS_PLAYBACK_ENHANCEMENTS_SPEC.md.
 
+Qualification is verified: original run 44831823224 succeeds on the first attempt,
+full pinned build/native tests and actual Windows D3D11/WARP GPU-next SDR/P5/P8.1.
+Normal nuviodv-windows-dv.5 targets exact binary/verifier source
+556759ef6e7e7cade8017d3a9501aecbc8de1542. Independently retrieved ZIP SHA-256
+d44c0a66230b266c28c4d3b90067fac31822ec52b2be713c540f12983039f0c2; DLL
+d8b1c1438cc44eff8ed9ff12f8d8ab044dd1b450dde5e2788182f7097ad9fdf2 independently
+loads in an isolated Windows process with client API 131078 / 2.6. All nine public
+asset digests, ZIP checksum, exact lock, ten dependency-license directories,
+CLI/headers/import library, zero-failure native test log, build/compiler evidence
+and all three runtime cases/PNG hashes pass. Inspected rendered images are a valid
+SDR gradient and correctly mapped orange furnace frames for both DV profiles.
+No hardware HDR signaling, FEL or long-playback certification is claimed.
+Native API scratch is disposable D:\Temp\nuviodv-maintenance-20261120-native-api;
+its probe process has exited and reviewed cleanup transaction
+0d45c034952c75a38fbf8b58e9c9d44f removes the exact two spent members immediately.
+Final source/evidence commit is retained on master before disposable-worktree
+cleanup; its actual receipt is recorded in Desktop's maintenance ledger.
+
 ### 2026-11-17 recurring maintenance
 
 The November 17 cross-repository ledger is Desktop `NUVIODESKTOP_PARITY_SPEC.md`.

@@ -51,7 +51,7 @@ The normal [Windows native DV release](https://github.com/Darkaxt/mpv/releases/t
 contains that exact qualified build. Its independently retrieved ZIP checksum,
 source manifest and DLL client API match the qualification report.
 
-The current maintained baseline is
+The previous maintained baseline is
 [`nuviodv-windows-dv.4`](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.4),
 from source `7e14bd6985283420edf8aa872edf0dd412de912e`, including upstream through
 `f92afa75cd`. [Run 44197733666](https://github.com/Darkaxt/mpv/actions/runs/44197733666)
@@ -69,13 +69,20 @@ Every build image and dependency commit remains pinned to the prior qualified
 baseline. Its DLL SHA-256 is
 `0fc5a186fb8648eda2226d29d1137fc9e4f27fe304c88884632ca202fb3a27bd`.
 
+The current maintained baseline is normal
+[`nuviodv-windows-dv.5`](https://github.com/Darkaxt/mpv/releases/tag/nuviodv-windows-dv.5),
+source `556759ef6e7e7cade8017d3a9501aecbc8de1542`, including the 90 upstream commits
+through `d11ffba253`. [Run 44831823224](https://github.com/Darkaxt/mpv/actions/runs/44831823224)
+passes the full pinned native build/contracts and actual Windows GPU-next
+SDR/Profile 5/Profile 8.1 qualification on its first attempt. Independent checks
+verify all nine public asset digests, source/dependency manifest, licenses and
+build/runtime evidence, rendered frames and DLL API 2.6. ZIP SHA-256 is
+`d44c0a66230b266c28c4d3b90067fac31822ec52b2be713c540f12983039f0c2`;
+DLL SHA-256 is `d8b1c1438cc44eff8ed9ff12f8d8ab044dd1b450dde5e2788182f7097ad9fdf2`.
+The dependency/image lock and WASAPI patch are unchanged. Neither application's
+native pin nor the shipped AnimeJaNai/SVP feature runtime is replaced by this release.
+
 The upstream README follows.
- 
-November 20 source maintenance includes upstream through `d11ffba253` (90
-commits), preserving the same dependency lock and WASAPI patch. Candidate
-`nuviodv-windows-dv.5` must pass the complete pinned build and real Windows
-SDR/Profile 5/Profile 8.1 GPU-next qualification before publication. The published
-`.4` baseline above remains the qualified delivery until those gates pass.
 
 
 * [External links](#external-links)

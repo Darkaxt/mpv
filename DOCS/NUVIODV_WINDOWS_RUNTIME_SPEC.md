@@ -42,6 +42,32 @@ Android library and NuvioMobileDV integration are now explicitly included.
 
 ## Execution and reconciliation
 
+### 2026-11-20 recurring maintenance
+
+Authority: existing four-fork maintenance heartbeat. Canonical feature checkout
+D:\Projects\mpv stays clean on nuviodv-animejanai / 814006b7fa. Independent master
+maintenance uses D:\Temp\nuviodv-maintenance-20261120-mpv-master (Git/native small-file
+I/O exception), baseline inventory ebb6bcdc96b2c4055eb1fb8cbe069ff2. Final clean
+pushed worktree/private registration must be removed immediately using a fresh
+disposable-repository proof; shared refs/objects and the feature branch survive.
+
+Conflict-free normal merge contains all 90 upstream commits through inspected
+d11ffba253def00b5172c4b8b47e6b2eb765cae1. Preserve WASAPI patch 162b1ce46c.
+Changes include Windows window-state/DWM fixes, presentation timing/AV sync,
+GPU-next OpenGL direct rendering, stats and a bluray bounds correction. Meson
+adds only the PR_SET_TIMERSLACK feature probe; no dependency minimum or owned
+cross-build script changed. No compatibility reason to change the pinned image,
+FFmpeg, libplacebo/c93aa134 or any other dependency. Only native release counter
+advances to nuviodv-windows-dv.5. App DLL/MVTools/AAR pins and P7 history remain
+unchanged; no enhancement feature is added or automatically merged.
+
+Source is integrated and ready for validation, not yet qualified: exact full
+pinned hosted build/native contracts, actual Windows API and GPU-next SDR/P5/P8.1,
+normal publication and independent artifact/hash/source/lock/license/build/frame
+and API checks remain required. No local WSL or Gradle build is needed. Retain the
+original workflow identity to actual completion, without duplicate dispatch.
+Material evidence is also recorded in Desktop docs/WINDOWS_PLAYBACK_ENHANCEMENTS_SPEC.md.
+
 ### 2026-11-17 recurring maintenance
 
 The November 17 cross-repository ledger is Desktop `NUVIODESKTOP_PARITY_SPEC.md`.

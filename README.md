@@ -70,6 +70,12 @@ baseline. Its DLL SHA-256 is
 `0fc5a186fb8648eda2226d29d1137fc9e4f27fe304c88884632ca202fb3a27bd`.
 
 The upstream README follows.
+ 
+November 20 source maintenance includes upstream through `d11ffba253` (90
+commits), preserving the same dependency lock and WASAPI patch. Candidate
+`nuviodv-windows-dv.5` must pass the complete pinned build and real Windows
+SDR/Profile 5/Profile 8.1 GPU-next qualification before publication. The published
+`.4` baseline above remains the qualified delivery until those gates pass.
 
 
 * [External links](#external-links)

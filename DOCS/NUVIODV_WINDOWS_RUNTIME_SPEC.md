@@ -67,6 +67,18 @@ Required acceptance: the complete pinned hosted build and native contracts,
 actual Windows API and GPU-next SDR/P5/P8.1 qualification, normal publication,
 and independent artifact/hash/source/lock/license checks.
 
+Qualification is verified: original run 45592148860 succeeds on the first attempt
+(build and Windows jobs), with 16/0 native tests and actual Windows WARP GPU-next
+SDR/P5/P8.1 (both DV profiles detected). Normal nuviodv-windows-dv.6 targets exact
+source 3eb49ff4bb281972d59177d97a42110c3687ec87. Independently retrieved ZIP SHA-256
+7c97c36a6022bdca9430b25b9c85ff105ea768d20def06fdaafc7347eb56b8be matches SHA256SUMS;
+DLL 82b31152ddacf66986d288089ff2308e837584e17df8d826fc848c70aceaa671 matches the
+verification report and loads in an isolated Windows process with client API
+131079 / 2.7 (create/initialize/destroy pass). The manifest keeps the pinned image
+digest and libplacebo c93aa134 fix; dependency licenses, CLI, headers and import
+library are present. No hardware HDR signaling, FEL or long-playback certification
+is claimed. App DLL pins are not promoted.
+
 ### 2026-11-20 recurring maintenance
 
 Authority: existing four-fork maintenance heartbeat. Canonical feature checkout

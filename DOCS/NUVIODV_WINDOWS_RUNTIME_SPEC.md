@@ -42,6 +42,31 @@ Android library and NuvioMobileDV integration are now explicitly included.
 
 ## Execution and reconciliation
 
+### 2026-11-25 recurring maintenance
+
+Authority: the Claude-owned NuvioDV maintenance task (taken over from Codex on
+2026-11-22). Canonical D:\Projects\mpv stays clean on nuviodv-animejanai /
+814006b7fa. Master is maintained in disposable worktree
+D:\Temp
+uviodv-maint-1125-mpv-master (Git small-file I/O exception), removed
+through transactional-cleanup after the push.
+
+Conflict-free normal merge contains all 38 upstream commits through inspected
+d32c910be6. Material changes: a libmpv gpu-next render backend with renderer
+selection (MPV_RENDER_PARAM_RENDERER; render API now defaults to gpu-next),
+client API 2.6 -> 2.7 (additive), vo_gpu_next queued-frame/subtitle/screenshot
+fixes, the csputils target-gamut=auto BT.709 fix and upstream's win32 libaom pin.
+The NuvioDV Windows app embeds through a window handle, not the render API, so
+the default-renderer change does not alter Windows app behaviour. Meson adds only
+the new gpu-next libmpv source and macOS sources; no dependency minimum or owned
+cross-build script changed. No compatibility reason to change the pinned image,
+FFmpeg, libplacebo/c93aa134 or any other dependency. Only the native release
+counter advances to nuviodv-windows-dv.6. App DLL/MVTools/AAR pins are unchanged.
+
+Required acceptance: the complete pinned hosted build and native contracts,
+actual Windows API and GPU-next SDR/P5/P8.1 qualification, normal publication,
+and independent artifact/hash/source/lock/license checks.
+
 ### 2026-11-20 recurring maintenance
 
 Authority: existing four-fork maintenance heartbeat. Canonical feature checkout
